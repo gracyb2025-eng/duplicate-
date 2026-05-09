@@ -1,0 +1,97 @@
+{% extends "base_sales.html" %}
+{% block content %}
+<h2>Add New Sale</h2>
+
+<form method="POST" action="{% url 'save_sale' %}" class="card p-4">
+    {% csrf_token %}
+
+
+    <div class="mb-3">
+        <label class="form-label">Item Name</label>
+        <select name="item_name" class="form-select">
+            <option value="Cement">Cement</option>
+            <option value="Iron Bars">Iron Bars</option>
+            <option value="Nails">Nails</option>
+            <option value="Roofing Nails">Roofing Nails</option>
+            <option value="Wheelbarrow">Wheelbarrow</option>
+            <option value="Wire Mesh">Wire Mesh</option>
+            <option value="Barbed Wire">Barbed Wire</option>
+            <option value="Iron Sheets">Iron Sheets</option>
+
+        </select>
+    </div>
+
+    
+    <div class="mb-3">
+        <label class="form-label">Specification</label>
+        <select name="specification" class="form-select">
+            <option value="CEM II/N">CEM II/N</option>
+            <option value="CEM III/N">CEM III/N</option>
+            <option value="10mm">10mm</option>
+            <option value="12mm">12mm</option>
+            <option value="16mm">16mm</option>
+            <option value="1 inch">1 inch</option>
+            <option value="3 inch">3 inch</option>
+            <option value="4 inch">4 inch</option>
+            <option value="5 inch">5 inch</option>
+            <option value="Roofing Nails 5kg">Roofing Nails 5kg</option>
+            <option value="Wheelbarrow">Wheelbarrow</option>
+            <option value="Wire Mesh">Wire Mesh</option>
+            <option value="High Tensile">High Tensile</option>
+            <option value="Low Tensile">Low Tensile</option>
+            <option value="Gauge 28">Gauge 28</option>
+            <option value="Gauge 30">Gauge 30</option>
+            <option value="Gauge 32">Gauge 32</option>
+        </select>
+         
+    </div>
+
+
+    <div class="mb-3">
+        <label class="form-label">Quantity</label>
+        <input type="number" name="quantity" class="form-control" placeholder="Enter quantity">
+    </div>
+
+
+    <div class="mb-3">
+        <label class="form-label">Unit Price</label>
+        <input type="number" name="unit_price" class="form-control" placeholder="Enter unit price">
+    </div>
+
+    
+    <div class="mb-3">
+        <label class="form-label">Total Price</label>
+        <input type="number" name="total_price" class="form-control" placeholder="Enter total price">
+    </div>
+
+
+    <div class="mb-3">
+        <label class="form-label">Payment Method</label>
+        <select name="payment_method" class="form-select">
+            <option value="Cash">Cash</option>
+            <option value="Credit">Credit</option>
+            <option value="Mobile">Mobile Money</option>
+        </select>
+    </div>
+
+    
+    <div class="mb-3">
+        <label class="form-label">Customer Name</label>
+        <input type="text" name="customer_name" class="form-control" placeholder="Enter customer name">
+    </div>
+
+    
+    <div class="mb-3">
+        <label class="form-label">Contact</label>
+        <input type="number" name="contact" class="form-control" placeholder="Enter customer phone">
+    </div>
+
+
+    <button type="submit" class="btn btn-success">
+        <i class="fas fa-save"></i> Save Sale
+    </button>
+    <a href="{% url 'sales_dashboard' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+</form>
+{% endblock %}

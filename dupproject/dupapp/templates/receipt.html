@@ -1,0 +1,25 @@
+<div class="receipt-box">
+  <h2>NYONDO GENERAL HARDWARE LTD</h2>
+  <p>Receipt No: {{ sale.receipt_number }}</p>
+  <p>Date: {{ sale.date }}</p>
+
+  <p>Customer: {{ sale.customer_name }} ({{ sale.contact }})</p>
+  <hr>
+
+  <p>Item: {{ sale.item_name }} - {{ sale.specification }}</p>
+  <p>Quantity: {{ sale.quantity }}</p>
+  <p>Unit Price: {{ sale.unit_price }}</p>
+  <p>Total Price: {{ sale.total_price }}</p>
+
+  <p>Payment Method: {{ sale.payment_method }}</p>
+  <p>Status: {{ sale.status }}</p>
+  <p>Amount Paid: {{ sale.amount_paid }}</p>
+  <p>Balance: {{ sale.balance }}</p>
+  <hr>
+
+  {% if sale.status == "Unpaid" %}
+    <p style="color:red;">Outstanding balance to be settled later.</p>
+  {% else %}
+    <p style="color:green;">Fully Paid. Thank you!</p>
+  {% endif %}
+</div>

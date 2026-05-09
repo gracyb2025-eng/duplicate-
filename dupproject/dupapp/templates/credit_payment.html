@@ -1,0 +1,13 @@
+<h2>Record Payment for {{ sale.customer_name }}</h2>
+<p>Receipt No: {{ sale.receipt_number }}</p>
+<p>Total Price: {{ sale.total_price }}</p>
+<p>Amount Paid So Far: {{ sale.amount_paid }}</p>
+<p>Remaining Balance: {{ sale.balance }}</p>
+
+<form method="POST" action="{% url 'add_payment' sale.id %}">
+    {% csrf_token %}
+    <input type="number" name="amount" placeholder="Deposit Amount" class="form-control mb-2">
+    <button type="submit" class="btn btn-success">
+      <i class="fas fa-hand-holding-usd"></i> Add Payment
+    </button>
+</form>
