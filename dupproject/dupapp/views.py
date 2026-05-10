@@ -5,7 +5,7 @@ import datetime
 
 # Create your views here.
 def generate_receipt_number():
-    today = datetime.date.today().strftime('%D%m%Y')
+    today = datetime.date.today().strftime('%d%m%Y')
     last_number = Sale.objects.filter(date__date=datetime.date.today()).count() + 1
     return f"RCT-{today}-{last_number:03d}"
 
@@ -13,7 +13,7 @@ def sales_dashboard(request):
     sales = Sale.objects.all().order_by("-date")
     total_sales = Sale.objects.aggregate(Sum('total_price'))['total_price__sum'] or 0
     total_deposits = Payment.objects.aggregate(Sum('amount'))['amount__sum'] or 0
-    outstanding_credit =sum(sale.balance() for sale in Sale.objects.filter(payment_method='credit'))
+    outstanding_credit =sum(sale.balance() for sale in Sale.objects.filter(payment_method='Credit'))
     paid_sales = Sale.objects.filter(payment_method__in=['Cash', 'Mobile']).count()
     unpaid_sales = sum(1 for sale in Sale.objects.filter(payment_method='Credit') if sale.balance() > 0)
 
@@ -35,7 +35,7 @@ def save_sale(request):
             quantity=request.POST['quantity'],
             unit_price=request.POST['unit_price'],
             total_price=request.POST['total_price'],
-            payment=request.POST['payment'],
+            payment_method=request.POST['payment_method'],
             customer_name=request.POST['customer_name'],
             contact=request.POST['contact'],
             receipt_number=generate_receipt_number()
@@ -65,7 +65,7 @@ def edit_sale(request, sale_id):
         sale.quantity = request.POST['quantity']
         sale.unit_price = request.POST['unit_price']
         sale.total_price = request.POST['total_price']
-        sale.payment = request.POST['payment']
+        sale.payment_method = request.POST['payment_method']
         sale.customer_name = request.POST['customer_name']
         sale.contact = request.POST['contact']
         sale.save()
@@ -76,3 +76,11 @@ def delete_sale(request, sale_id):
     sale = get_object_or_404(Sale, id=sale_id)
     sale.delete()
     return redirect('sales_dashboard')
+
+def reports(request):
+    daily_sales = Sale.objects.values('date__date').annotate(total=Sum('total_price'))
+    payment_methods = Sale.objects.values('payment_method').annotate(total=Sum('total_price'))
+    return render(request, "reports.html", {
+        "daily_sales": daily_sales,
+        "payment_methods": payment_methods,
+    })

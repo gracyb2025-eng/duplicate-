@@ -36,7 +36,7 @@
     </div>
 </div>
 
-<a href="'{% url 'save_sale' %}" class="btn btn-success mb-3">
+<a href="{% url 'save_sale' %}" class="btn btn-success mb-3">
     <i class="fas fa-plus"></i> Add Sale
 </a>
 
@@ -53,27 +53,27 @@
     {% for sale in sales %}
     <tr>
         <td>{{ sale.receipt_number }}</td>
-        <td>{{ sale.item }}</td>
+        <td>{{ sale.item_name }}</td>
         <td>{{ sale.total_price }}</td>
         <td>{{ sale.amount_paid }}</td>
         <td>{{ sale.balance }}</td>
         <td>{{ sale.status }}</td>
         <td>
-            <a href="{% url 'view_receipt' sale.id %}" class="btn btn-sm btn-primary">
-        <i class="fas fa-file-invoice"></i>
+            <a href="{% url 'view_receipt' sale.id %}" class="btn btn-sm btn-primary" title="View Receipt">
+        <i class="fa-solid fa-receipt"></i>
       </a>
       
-      <a href="{% url 'edit_sale' sale.id %}" class="btn btn-sm btn-info">
-        <i class="fas fa-edit"></i>
+      <a href="{% url 'edit_sale' sale.id %}" class="btn btn-sm btn-info" title="Edit Sale">
+        <i class="fa-solid fa-pen-to-square"></i>
       </a>
     
-      <a href="{% url 'delete_sale' sale.id %}" class="btn btn-sm btn-danger">
-        <i class="fas fa-trash"></i>
+      <a href="{% url 'delete_sale' sale.id %}" class="btn btn-sm btn-danger" title="Delete Sale">
+       <i class="fa-solid fa-trash"></i>
       </a>
       
       {% if sale.payment_method == "Credit" and sale.balance > 0 %}
-        <a href="{% url 'add_payment' sale.id %}" class="btn btn-sm btn-warning">
-          <i class="fas fa-hand-holding-usd"></i>
+        <a href="{% url 'add_payment' sale.id %}" class="btn btn-sm btn-warning" title="Add Payment">
+          <i class="fa-solid fa-pencil"></i>
         </a>
       {% endif %}
     </td>

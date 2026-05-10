@@ -26,4 +26,5 @@ urlpatterns = [
     path("payment/<int:sale_id>/", views.add_payment, name="add_payment"),
     path("sales/edit/<int:sale_id>/", views.edit_sale, name="edit_sale"),
     path("sales/delete/<int:sale_id>/", views.delete_sale, name="delete_sale"),
+    path("reports/", views.reports, name="reports"),
 ]
