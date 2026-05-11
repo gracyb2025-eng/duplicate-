@@ -1,0 +1,50 @@
+{% extends "base_stock.html" %}
+{% block content %}
+<h2>Stock Dashboard</h2>
+
+<div class="row">
+  <div class="col-md-3">
+    <div class="card bg-info text-white">
+      <div class="card-body">Total Stock Value: {{ total_value }}</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card bg-warning text-dark">
+      <div class="card-body">Low Stock Items: {{ low_stock.count }}</div>
+    </div>
+  </div>
+</div>
+
+<table class="table table-bordered mt-3">
+  <tr>
+    <th>Item</th><th>Spec</th><th>Qty</th><th>Unit Cost</th><th>Selling Price</th><th>Supplier</th><th>Balance</th><th>Actions</th>
+  </tr>
+  {% for stock in stocks %}
+  <tr {% if stock.quantity < 10 %} class="table-danger" {% endif %}>
+    <td>{{ stock.item_name }}</td>
+    <td>{{ stock.specification }}</td>
+    <td>{{ stock.quantity }}</td>
+    <td>{{ stock.unit_cost }}</td>
+    <td>{{ stock.selling_price }}</td>
+    <td>{{ stock.supplier.name }}</td>
+    <td>{{ stock.balance }}</td>
+    <td>
+      <a href="{% url 'view_stock' stock.id %}" class="btn btn-sm btn-primary" title="View">
+        <i class="fas fa-eye"></i>
+      </a>
+      <a href="{% url 'edit_stock' stock.id %}" class="btn btn-sm btn-info" title="Edit">
+        <i class="fas fa-edit"></i>
+      </a>
+      <a href="{% url 'delete_stock' stock.id %}" class="btn btn-sm btn-danger" title="Delete">
+        <i class="fas fa-trash"></i>
+      </a>
+      {% if stock.payment_method == "Credit" and stock.balance > 0 %}
+        <a href="{% url 'add_supplier_payment' stock.id %}" class="btn btn-sm btn-warning" title="Add Payment">
+          <i class="fas fa-hand-holding-usd"></i>
+        </a>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
