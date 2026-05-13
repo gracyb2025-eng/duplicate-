@@ -1,10 +1,88 @@
 {% extends 'base_sales.html' %}
 
 {% block content %}
+<style>
 
+   /* Table container styled as a card */
+.table-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-top: 20px;
+}
+
+/* Table header styling */
+.table-card thead th {
+  background-color: #343a40; /* dark gray consistent with navbar/footer */
+  color: #fff;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Add Sale button spacing + hover */
+.btn-add-sale {
+  margin-left: 15px; /* space on the left */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.btn-add-sale:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+ 
+
+    /* Table header styling */
+.table thead th {
+  background-color: #343a40; /* Bootstrap dark gray */
+  color: #ffffff;            /* White text for contrast */
+  text-align: center;
+  font-weight: 600;
+}
+
+    /* Card hover effect */
+.cards .card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.cards .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+/* Table styling */
+.table thead {
+  background-color: #212529; /* Bootstrap dark */
+  color: #fff;
+}
+.table-container {
+  background: #fff;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Add Sale button hover */
+.btn-success {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.btn-success:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Navbar & footer consistency */
+/* .navbar-dark, footer {
+  background-color: #212529 !important; /* same dark tone */
+/* }
+footer {
+  color: #fff; */
+/* } */ */
+
+</style>
 
 <h2>Sales Dashboard</h2>
-
+<div class="cards">
 <div class="row mb-4">
     <div class="col-md-3">
         <div class="card text-center bg-primary text-white">
@@ -35,13 +113,16 @@
         </div>
     </div>
 </div>
-
+</div>
 <a href="{% url 'save_sale' %}" class="btn btn-success mb-3">
     <i class="fas fa-plus"></i> Add Sale
 </a>
 
-<table class="table table-bordered">
-    <tr>
+
+<div class="table-container">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
         <th>Receipt No</th>
         <th>Item</th>
         <th>Total Price</th>
@@ -49,9 +130,11 @@
         <th>Balance</th>
         <th>Status</th>
         <th>Actions</th>
-    </tr>
-    {% for sale in sales %}
-    <tr>
+      </tr>
+    </thead>
+    <tbody>
+      {% for sale in sales %}
+      <tr>
         <td>{{ sale.receipt_number }}</td>
         <td>{{ sale.item_name }}</td>
         <td>{{ sale.total_price }}</td>

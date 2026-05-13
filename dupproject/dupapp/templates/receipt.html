@@ -1,30 +1,79 @@
+<style>
+
+.receipt-box {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  box-shadow: 0 0 10px rgba(0,0,0,0.15);
+  font-size: 14px;
+  line-height: 1.6;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #333;
+  background: #fff;
+}
+
+.receipt-box h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: bold;
+  color: #212529; /* same dark tone as your dashboards */
+}
+
+.receipt-box hr {
+  border-top: 1px solid #ccc;
+  margin: 15px 0;
+}
+
+.receipt-box p {
+  margin: 5px 0;
+}
+
+.receipt-box .highlight {
+  font-weight: bold;
+  color: #212529;
+}
+
+.receipt-box .status-paid {
+  color: #198754; /* Bootstrap green */
+  font-weight: bold;
+}
+
+.receipt-box .status-unpaid {
+  color: #dc3545; /* Bootstrap red */
+  font-weight: bold;
+}
+
+
+</style>
+
+
+
 <div class="receipt-box">
   <h2>NYONDO GENERAL HARDWARE LTD</h2>
-  <p>Receipt No: {{ sale.receipt_number }}</p>
-  <p>Date: {{ sale.date }}</p>
+  <p><span class="highlight">Receipt No:</span> {{ sale.receipt_number }}</p>
+  <p><span class="highlight">Date:</span> {{ sale.date }}</p>
 
-  <p>Customer: {{ sale.customer_name }} ({{ sale.contact }})</p>
+  <p><span class="highlight">Customer:</span> {{ sale.customer_name }} ({{ sale.contact }})</p>
   <hr>
 
-  <p>Item: {{ sale.item_name }} - {{ sale.specification }}</p>
-  <p>Quantity: {{ sale.quantity }}</p>
-  <p>Unit Price: {{ sale.unit_price }}</p>
-  <p>Total Price: {{ sale.total_price }}</p>
+  <p><span class="highlight">Item:</span> {{ sale.item_name }} - {{ sale.specification }}</p>
+  <p><span class="highlight">Quantity:</span> {{ sale.quantity }}</p>
+  <p><span class="highlight">Unit Price:</span> {{ sale.unit_price }}</p>
+  <p><span class="highlight">Total Price:</span> {{ sale.total_price }}</p>
 
-  <p>Transport Cost: {{ sale.transport_cost }}</p>
+  <p><span class="highlight">Transport Cost:</span> {{ sale.transport_cost }}</p>
+  <p><span class="highlight">Grand Total:</span> {{ sale.total_price|add:sale.transport_cost }}</p>
 
-
-<p>Grand Total: {{ sale.total_price|add:sale.transport_cost }}</p>
-
-  <p>Payment Method: {{ sale.payment_method }}</p>
-  <p>Status: {{ sale.status }}</p>
-  <p>Amount Paid: {{ sale.amount_paid }}</p>
-  <p>Balance: {{ sale.balance }}</p>
+  <p><span class="highlight">Payment Method:</span> {{ sale.payment_method }}</p>
+  <p><span class="highlight">Status:</span> {{ sale.status }}</p>
+  <p><span class="highlight">Amount Paid:</span> {{ sale.amount_paid }}</p>
+  <p><span class="highlight">Balance:</span> {{ sale.balance }}</p>
   <hr>
 
   {% if sale.status == "Unpaid" %}
-    <p style="color:red;">Outstanding balance to be settled later.</p>
+    <p class="status-unpaid">Outstanding balance to be settled later.</p>
   {% else %}
-    <p style="color:green;">Fully Paid. Thank you!</p>
+    <p class="status-paid">Fully Paid. Thank you!</p>
   {% endif %}
 </div>

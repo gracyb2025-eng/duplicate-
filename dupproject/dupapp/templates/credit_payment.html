@@ -1,13 +1,64 @@
-<h2>Record Payment for {{ sale.customer_name }}</h2>
-<p>Receipt No: {{ sale.receipt_number }}</p>
-<p>Total Price: {{ sale.total_price }}</p>
-<p>Amount Paid So Far: {{ sale.amount_paid }}</p>
-<p>Remaining Balance: {{ sale.balance }}</p>
+{% extends 'base_sales.html' %}
+{% block content %}
 
-<form method="POST" action="{% url 'add_payment' sale.id %}">
+<style>
+  .payment-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 60px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .payment-card h2 {
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #212529;
+  }
+
+  .payment-details p {
+    margin: 5px 0;
+    font-weight: 500;
+    color: #343a40;
+  }
+
+  .payment-details span {
+    font-weight: 600;
+    color: #0d6efd; /* Bootstrap blue highlight */
+  }
+
+  .btn-success, .btn-secondary {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .btn-success:hover, .btn-secondary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+</style>
+
+<div class="payment-card">
+  <h2>Record Payment for {{ sale.customer_name }}</h2>
+
+  <div class="payment-details mb-3">
+    <p><span>Receipt No:</span> {{ sale.receipt_number }}</p>
+    <p><span>Total Price:</span> {{ sale.total_price }}</p>
+    <p><span>Amount Paid So Far:</span> {{ sale.amount_paid }}</p>
+    <p><span>Remaining Balance:</span> {{ sale.balance }}</p>
+  </div>
+
+  <form method="POST" action="{% url 'add_payment' sale.id %}">
     {% csrf_token %}
-    <input type="number" name="amount" placeholder="Deposit Amount" class="form-control mb-2">
-    <button type="submit" class="btn btn-success">
+    <div class="mb-3">
+      <label class="form-label">Deposit Amount</label>
+      <input type="number" name="amount" placeholder="Enter deposit amount" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-success me-2">
       <i class="fas fa-hand-holding-usd"></i> Add Payment
     </button>
-</form>
+    <a href="{% url 'sales_dashboard' %}" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+  </form>
+</div>
+
+{% endblock %}
