@@ -1,0 +1,57 @@
+{% extends "base_stock.html" %}
+{% block content %}
+<h2>Stock Reports</h2>
+
+<div class="row mb-3">
+  <div class="col-md-3">
+    <div class="card bg-success text-white">
+      <div class="card-body">Total Items: {{ current_stock.count }}</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card bg-warning text-dark">
+      <div class="card-body">Low Stock: {{ low_stock.count }}</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card bg-danger text-white">
+      <div class="card-body">Suppliers on Credit: {{ supplier_credit.count }}</div>
+    </div>
+  </div>
+</div>
+
+<h4>📦 Stock Inflow</h4>
+<table class="table table-bordered">
+  <tr><th>Date</th><th>Total Units Received</th></tr>
+  {% for entry in inflow %}
+    <tr><td>{{ entry.date_received__date }}</td><td>{{ entry.total }}</td></tr>
+  {% endfor %}
+</table>
+
+<h4>📉 Current Stock Levels</h4>
+<table class="table table-striped">
+  <tr><th>Item</th><th>Spec</th><th>Qty</th><th>Supplier</th></tr>
+  {% for stock in current_stock %}
+    <tr {% if stock.quantity < 10 %} class="table-danger" {% endif %}>
+      <td>{{ stock.item_name }}</td>
+      <td>{{ stock.specification }}</td>
+      <td>{{ stock.quantity }}</td>
+      <td>{{ stock.supplier.name }}</td>
+    </tr>
+  {% endfor %}
+</table>
+
+<h4>💳 Supplier Credit Balances</h4>
+<table class="table table-bordered">
+  <tr><th>Supplier</th><th>Item</th><th>Total Cost</th><th>Amount Paid</th><th>Balance</th></tr>
+  {% for stock in supplier_credit %}
+    <tr>
+      <td>{{ stock.supplier.name }}</td>
+      <td>{{ stock.item_name }}</td>
+      <td>{{ stock.quantity|floatformat:0 }} × {{ stock.unit_cost }} = {{ stock.quantity|floatformat:0|add:0|floatformat:0 }}</td>
+      <td>{{ stock.amount_paid }}</td>
+      <td>{{ stock.balance }}</td>
+    </tr>
+  {% endfor %}
+</table>
+{% endblock %}

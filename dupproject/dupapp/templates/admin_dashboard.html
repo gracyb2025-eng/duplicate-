@@ -1,0 +1,93 @@
+{% extends "base_admin.html" %}
+{% block content %}
+<h2>Admin Dashboard</h2>
+
+<div class="row mb-3">
+  <div class="col-md-3">
+    <div class="card bg-info text-white text-center">
+      <div class="card-body">
+        <h5>Total Stock Value</h5>
+        <p>UGX {{ total_stock_value }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card bg-warning text-dark text-center">
+      <div class="card-body">
+        <h5>Low Stock Items</h5>
+        <p>{{ low_stock.count }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card bg-danger text-white text-center">
+      <div class="card-body">
+        <h5>Suppliers on Credit</h5>
+        <p>{{ supplier_credit.count }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card bg-success text-white text-center">
+      <div class="card-body">
+        <h5>Total Suppliers</h5>
+        <p>{{ suppliers.count }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-3">
+  <div class="col-md-6">
+    <div class="card bg-secondary text-white text-center">
+      <div class="card-body">
+        <h5>Transport Revenue</h5>
+        <p>UGX {{ transport_revenue }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card bg-info text-dark text-center">
+      <div class="card-body">
+        <h5>Free Deliveries</h5>
+        <p>{{ free_deliveries }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h4>📦 Stock Summary</h4>
+<table class="table table-bordered">
+  <tr><th>Item</th><th>Spec</th><th>Qty</th><th>Supplier</th><th>Balance</th></tr>
+  {% for stock in stocks %}
+    <tr {% if stock.quantity < 10 %} class="table-danger" {% endif %}>
+      <td>{{ stock.item_name }}</td>
+      <td>{{ stock.specification }}</td>
+      <td>{{ stock.quantity }}</td>
+      <td>{{ stock.supplier.name }}</td>
+      <td>{{ stock.balance }}</td>
+    </tr>
+  {% endfor %}
+</table>
+
+<h4>👥 Supplier List</h4>
+<table class="table table-striped">
+  <tr><th>Name</th><th>Email</th><th>Contact</th><th>Address</th><th>Actions</th></tr>
+  {% for supplier in suppliers %}
+    <tr>
+      <td>{{ supplier.name }}</td>
+      <td>{{ supplier.email }}</td>
+      <td>{{ supplier.contact }}</td>
+      <td>{{ supplier.address }}</td>
+      <td>
+        <a href="{% url 'edit_supplier' supplier.id %}" class="btn btn-sm btn-info">Edit</a>
+        <a href="{% url 'delete_supplier' supplier.id %}" class="btn btn-sm btn-danger">Delete</a>
+      </td>
+    </tr>
+  {% endfor %}
+</table>
+{% endblock %}

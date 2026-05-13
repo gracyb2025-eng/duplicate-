@@ -19,7 +19,8 @@ from django.urls import path
 from dupapp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("", views.sales_dashboard, name="home"),  
+    path("", views.sales_dashboard, name="home"), 
+    path("dashboard/", views.admin_dashboard, name="admin_dashboard"), 
     path("sales/dashboard/", views.sales_dashboard, name="sales_dashboard"),
     path("sales/form/", views.save_sale, name="save_sale"),
     path("receipt/<int:sale_id>/", views.view_receipt, name="view_receipt"),
@@ -34,4 +35,8 @@ urlpatterns = [
     path("stock/delete/<int:stock_id>/", views.delete_stock, name="delete_stock"),
     path("supplier/add/", views.add_supplier, name="add_supplier"),
     path("supplier/payment/<int:stock_id>/", views.add_supplier_payment, name="add_supplier_payment"),
+    path("stock/reports/", views.stock_reports, name="stock_reports"),
+    path("supplier_list/", views.supplier_list, name="supplier_list"),
+
+
 ]

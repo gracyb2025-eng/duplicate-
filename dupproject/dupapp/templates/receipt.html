@@ -11,6 +11,11 @@
   <p>Unit Price: {{ sale.unit_price }}</p>
   <p>Total Price: {{ sale.total_price }}</p>
 
+  <p>Transport Cost: {{ sale.transport_cost }}</p>
+
+
+<p>Grand Total: {{ sale.total_price|add:sale.transport_cost }}</p>
+
   <p>Payment Method: {{ sale.payment_method }}</p>
   <p>Status: {{ sale.status }}</p>
   <p>Amount Paid: {{ sale.amount_paid }}</p>

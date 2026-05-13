@@ -30,6 +30,13 @@ def sales_dashboard(request):
 
 def save_sale(request):
     if request.method == 'POST':
+        total_price = float(request.POST['total_price'])
+        distance_km = int(request.POST.get('distance_km', 0))
+
+        if total_price >= 500000 and distance_km <= 10:
+            transport_cost = 0
+        else:
+            transport_cost = 30000
         sale = Sale.objects.create(
             item_name=request.POST['item_name'],
             specification=request.POST['specification'],
@@ -162,4 +169,54 @@ def add_supplier_payment(request, stock_id):
         return redirect("stock_dashboard")
     return render(request, "supplier_payment_form.html", {"stock": stock})
        
-        
+
+
+from django.db.models import Sum
+
+def stock_reports(request):
+    inflow = Stock.objects.values('date_received__date').annotate(total=Sum('quantity'))
+    outflow = []  # later link to your Sale model if you have one
+    current_stock = Stock.objects.all()
+    supplier_credit = Stock.objects.filter(payment_method="Credit")
+    low_stock = Stock.objects.filter(quantity__lt=10)
+
+    return render(request, "reports.html", {
+        "inflow": inflow,
+        "outflow": outflow,
+        "current_stock": current_stock,
+        "supplier_credit": supplier_credit,
+        "low_stock": low_stock,
+    })
+
+
+
+
+
+def admin_dashboard(request):
+    stocks = Stock.objects.all()
+    suppliers = Supplier.objects.all()
+    low_stock = stocks.filter(quantity__lt=10)
+    supplier_credit = Sale.objects.filter(payment_method="Credit")
+    total_stock_value = sum([s.stock_value() for s in stocks]) if stocks else 0
+
+    # Transport calculations
+    transport_revenue = Sale.objects.aggregate(Sum('transport_cost'))['transport_cost__sum'] or 0
+    free_deliveries = Sale.objects.filter(transport_cost=0).count()
+
+    context = {
+        "stocks": stocks,
+        "suppliers": suppliers,
+        "low_stock": low_stock,
+        "supplier_credit": supplier_credit,
+        "total_stock_value": total_stock_value,
+        "transport_revenue": transport_revenue,
+        "free_deliveries": free_deliveries,
+    }
+    return render(request, "admin_dashboard.html", context)
+
+
+def supplier_list(request):
+    suppliers = Supplier.objects.all()
+    return render(request, "supplier_list.html", {"suppliers": suppliers})
+
+

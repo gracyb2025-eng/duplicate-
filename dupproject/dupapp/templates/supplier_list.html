@@ -1,0 +1,15 @@
+{% extends "base_admin.html" %}
+{% block content %}
+<h2>Supplier List</h2>
+<table class="table table-bordered">
+  <tr><th>Name</th><th>Email</th><th>Contact</th><th>Address</th></tr>
+  {% for supplier in suppliers %}
+    <tr>
+      <td>{{ supplier.name }}</td>
+      <td>{{ supplier.email }}</td>
+      <td>{{ supplier.contact }}</td>
+      <td>{{ supplier.address }}</td>
+    </tr>
+  {% endfor %}
+</table>
+{% endblock %}

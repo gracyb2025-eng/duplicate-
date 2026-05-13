@@ -2,6 +2,9 @@ from django.db import models
 import datetime
 # Create your models here.
 class Sale(models.Model):
+
+    distance_km = models.IntegerField(default=0)
+    transport_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     ITEM_NAME_CHOICES = [
         ('Cement', 'Cement'),
         ('Iron Bar', 'Iron Bar'),
@@ -70,7 +73,7 @@ class Payment(models.Model):
     def __str__(self):
         return f"{self.sale.receipt_number} - {self.amount}"
 
-class Supplier(models.Models):
+class Supplier(models.Model):
     name = models.CharField(max_length=100, unique=True)
     email = models.EmailField(unique=True)
     contact = models.CharField(max_length=20,blank=True, null=True)
