@@ -14,7 +14,7 @@
 
 <h2>Add New Sale</h2>
 
-<form method="POST" action="{% url 'save_sale' %}" class="form-container">
+<form method="POST" action="{% if sale %}{% url 'edit_sale' sale.id %}{% else %}{% url 'save_sale' %}{% endif %}" class="form-container">
   {% csrf_token %}
 
   <div class="row">

@@ -1,0 +1,25 @@
+{% extends "base_sales.html" %}
+{% block content %}
+<h2>Deposit History for {{ customer_name }} ({{ item_name }})</h2>
+<table class="table table-bordered">
+  <thead class="table-dark">
+    <tr><th>Date</th><th>Amount</th><th>Payment Method</th><th>Receipt</th></tr>
+  </thead>
+  <tbody>
+    {% for deposit in deposits %}
+      <tr>
+        <td>{{ deposit.date|date:"Y-m-d H:i" }}</td>
+        <td>UGX {{ deposit.amount|floatformat:0 }}</td>
+        <td>{{ deposit.payment_method }}</td>
+        <td>{{ deposit.receipt_number }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div class="card p-3 mt-3">
+  <p><strong>Total Cost:</strong> UGX {{ total_cost|floatformat:0 }}</p>
+  <p><strong>Total Paid:</strong> UGX {{ total_paid|floatformat:0 }}</p>
+  <p><strong>Remaining Balance:</strong> UGX {{ balance|floatformat:0 }}</p>
+</div>
+{% endblock %}

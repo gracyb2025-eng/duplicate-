@@ -107,3 +107,37 @@ class SupplierPayment(models.Model):
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE,related_name='supplier_payments')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateTimeField(auto_now_add=True)     
+
+
+
+    
+
+class Deposit(models.Model):
+    PAYMENT_METHODS = [
+        ("Cash", "Cash"),
+        ("Mobile Money", "Mobile Money"),
+    ]
+
+    customer_name = models.CharField(max_length=100)
+    item_name = models.CharField(max_length=100)
+    total_cost = models.DecimalField(max_digits=10, decimal_places=2)  # cost of item
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS)
+    receipt_number = models.CharField(max_length=20, unique=True)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.customer_name} - {self.item_name}"
+
+    @staticmethod
+    def total_deposited(customer_name, item_name):
+        deposits = Deposit.objects.filter(customer_name=customer_name, item_name=item_name)
+        return sum(d.amount for d in deposits)
+
+    @staticmethod
+    def remaining_balance(customer_name, item_name):
+        deposits = Deposit.objects.filter(customer_name=customer_name, item_name=item_name)
+        if deposits.exists():
+            total_cost = deposits.first().total_cost
+            return total_cost - sum(d.amount for d in deposits)
+        return None

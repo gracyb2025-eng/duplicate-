@@ -1,0 +1,32 @@
+{% extends "base_sales.html" %}
+{% block content %}
+<h2>Record Customer Deposit</h2>
+<form method="POST">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label class="form-label">Customer Name</label>
+    <input type="text" name="customer_name" class="form-control" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Item</label>
+    <input type="text" name="item_name" class="form-control" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Total Item Cost</label>
+    <input type="number" name="total_cost" class="form-control" required min="1">
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Deposit Amount</label>
+    <input type="number" name="amount" class="form-control" required min="1">
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Payment Method</label>
+    <select name="payment_method" class="form-select" required>
+      <option value="Cash">Cash</option>
+      <option value="Mobile Money">Mobile Money</option>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-success">Save Deposit</button>
+  <a href="{% url 'deposit_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

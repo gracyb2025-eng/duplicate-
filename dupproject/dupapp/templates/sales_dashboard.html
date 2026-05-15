@@ -1,124 +1,113 @@
 {% extends 'base_sales.html' %}
 
 {% block content %}
+{% load humanize %}
 <style>
+  /* Container for all cards */
+  .cards-container {
+    background: #fff;
+    border-radius: 15px;
+    padding: 30px;
+    margin: 20px auto;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    max-width: 1100px; /* keeps cards centered */
+  }
 
-   /* Table container styled as a card */
-.table-card {
-  background: #fff;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  margin-top: 20px;
-}
+  /* Card styling */
+  .cards .card {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 20px;
+  }
+  .cards .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  }
 
-/* Table header styling */
-.table-card thead th {
-  background-color: #343a40; /* dark gray consistent with navbar/footer */
-  color: #fff;
-  text-align: center;
-  font-weight: 600;
-}
+  /* Table container */
+  .table-container {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-top: 30px;
+  }
 
-/* Add Sale button spacing + hover */
-.btn-add-sale {
-  margin-left: 15px; /* space on the left */
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.btn-add-sale:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
- 
-
-    /* Table header styling */
-.table thead th {
-  background-color: #343a40; /* Bootstrap dark gray */
-  color: #ffffff;            /* White text for contrast */
-  text-align: center;
-  font-weight: 600;
-}
-
-    /* Card hover effect */
-.cards .card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  margin-left: 10px;
-  margin-right: 10px;
-}
-.cards .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-}
-
-/* Table styling */
-.table thead {
-  background-color: #212529; /* Bootstrap dark */
-  color: #fff;
-}
-.table-container {
-  background: #fff;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-/* Add Sale button hover */
-.btn-success {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.btn-success:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-/* Navbar & footer consistency */
-/* .navbar-dark, footer {
-  background-color: #212529 !important; /* same dark tone */
-/* }
-footer {
-  color: #fff; */
-/* } */ */
-
+  /* Table header styling */
+  .table thead th {
+    background-color: #343a40;
+    color: #fff;
+    text-align: center;
+    font-weight: 600;
+  }
 </style>
 
-<h2>Sales Dashboard</h2>
-<div class="cards">
-<div class="row mb-4">
-    <div class="col-md-3">
-        <div class="card text-center bg-primary text-white">
+<h2 class="text-center mb-4">Sales Dashboard</h2>
+
+<!-- Cards container -->
+<div class="cards-container">
+  <div class="cards">
+    <div class="row justify-content-center">
+      <!-- Total Sales + Customer Deposits stacked -->
+      <div class="col-md-3 text-center">
+        <div class="card bg-primary text-white mb-3">
+          <div class="card-body">
             <i class="fas fa-shopping-cart fa-2x"></i>
             <h5>Total Sales</h5>
-            <p>UGX {{ total_sales }}</p>
+            <p>UGX {{ total_sales|intcomma }}</p>
+          </div>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center bg-warning text-white">
+        <div class="card bg-warning text-white">
+          <div class="card-body">
+            <h5 class="card-title">Customer Deposits</h5>
+            <p class="card-text">Track deposits made by customers</p>
+            <a href="{% url 'deposit_list' %}" class="btn btn-light btn-sm">View Deposits</a>
+            <a href="{% url 'add_deposit' %}" class="btn btn-dark btn-sm">Add Deposit</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Outstanding Credit -->
+      <div class="col-md-3 text-center">
+        <div class="card bg-warning text-white">
+          <div class="card-body">
             <i class="fas fa-handshake fa-2x"></i>
             <h5>Outstanding Credit</h5>
-            <p>UGX {{ outstanding_credit }}</p>
+            <p>UGX {{ outstanding_credit|intcomma }}</p>
+          </div>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center bg-success text-white">
+      </div>
+
+      <!-- Deposits Received + Unpaid Sales stacked -->
+      <div class="col-md-3 text-center">
+        <div class="card bg-success text-white mb-3">
+          <div class="card-body">
             <i class="fas fa-money-bill-wave fa-2x"></i>
             <h5>Deposits Received</h5>
-            <p>UGX {{ total_deposits }}</p>
+            <p>UGX {{ total_deposits|intcomma }}</p>
+          </div>
         </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center bg-danger text-white">
+        <div class="card bg-danger text-white">
+          <div class="card-body">
             <i class="fas fa-exclamation-circle fa-2x"></i>
             <h5>Unpaid Sales</h5>
-            <p>{{ unpaid_sales }}</p>
+            <p>{{ unpaid_sales|intcomma }}</p>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
-</div>
-<a href="{% url 'save_sale' %}" class="btn btn-success mb-3">
+
+<!-- Add Sale button -->
+<div class="text-center mt-4">
+  <a href="{% url 'save_sale' %}" class="btn btn-success">
     <i class="fas fa-plus"></i> Add Sale
-</a>
+  </a>
+</div>
 
-
+<!-- Sales table -->
 <div class="table-container">
   <table class="table table-bordered">
     <thead>
@@ -142,28 +131,24 @@ footer {
         <td>{{ sale.balance }}</td>
         <td>{{ sale.status }}</td>
         <td>
-            <a href="{% url 'view_receipt' sale.id %}" class="btn btn-sm btn-primary" title="View Receipt">
-        <i class="fa-solid fa-receipt"></i>
-      </a>
-      
-      <a href="{% url 'edit_sale' sale.id %}" class="btn btn-sm btn-info" title="Edit Sale">
-        <i class="fa-solid fa-pen-to-square"></i>
-      </a>
-    
-      <a href="{% url 'delete_sale' sale.id %}" class="btn btn-sm btn-danger" title="Delete Sale">
-       <i class="fa-solid fa-trash"></i>
-      </a>
-      
-      {% if sale.payment_method == "Credit" and sale.balance > 0 %}
-        <a href="{% url 'add_payment' sale.id %}" class="btn btn-sm btn-warning" title="Add Payment">
-          <i class="fa-solid fa-pencil"></i>
-        </a>
-      {% endif %}
-    </td>
-  </tr>
-  {% endfor %}
+          <a href="{% url 'view_receipt' sale.id %}" class="btn btn-sm btn-primary" title="View Receipt">
+            <i class="fa-solid fa-receipt"></i>
+          </a>
+          <a href="{% url 'edit_sale' sale.id %}" class="btn btn-sm btn-info" title="Edit Sale">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </a>
+          <a href="{% url 'delete_sale' sale.id %}" class="btn btn-sm btn-danger" title="Delete Sale">
+            <i class="fa-solid fa-trash"></i>
+          </a>
+          {% if sale.payment_method == "Credit" and sale.balance > 0 %}
+            <a href="{% url 'add_payment' sale.id %}" class="btn btn-sm btn-warning" title="Add Payment">
+              <i class="fa-solid fa-pencil"></i>
+            </a>
+          {% endif %}
         </td>
-    </tr>
-</table>
-
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}

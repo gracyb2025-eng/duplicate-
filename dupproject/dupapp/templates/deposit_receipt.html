@@ -1,0 +1,13 @@
+{% extends "base_sales.html" %}
+{% block content %}
+<div class="card p-4 shadow-sm">
+  <h3>Temporary Receipt</h3>
+  <p><strong>Customer:</strong> {{ deposit.customer_name }}</p>
+  <p><strong>Item:</strong> {{ deposit.item_name }}</p>
+  <p><strong>Total Cost:</strong> UGX {{ deposit.total_cost|floatformat:0 }}</p>
+  <p><strong>Deposit Amount:</strong> UGX {{ deposit.amount|floatformat:0 }}</p>
+  <p><strong>Payment Method:</strong> {{ deposit.payment_method }}</p>
+  <p><strong>Date:</strong> {{ deposit.date|date:"Y-m-d H:i" }}</p>
+  <p><strong>Receipt No:</strong> {{ deposit.receipt_number }}</p>
+</div>
+{% endblock %}

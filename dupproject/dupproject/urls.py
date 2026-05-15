@@ -37,6 +37,13 @@ urlpatterns = [
     path("supplier/payment/<int:stock_id>/", views.add_supplier_payment, name="add_supplier_payment"),
     path("stock/reports/", views.stock_reports, name="stock_reports"),
     path("supplier_list/", views.supplier_list, name="supplier_list"),
+    path("deposits/", views.deposit_list, name="deposit_list"),
+    path("deposits/add/", views.add_deposit, name="add_deposit"),
+    path("deposits/<int:deposit_id>/receipt/", views.view_deposit_receipt, name="view_deposit_receipt"),
+    path("deposits/<str:customer_name>/<str:item_name>/history/", views.deposit_history, name="deposit_history"),
+    path("stock/<int:stock_id>/edit/", views.edit_stock, name="edit_stock"),
+    path("sales/<int:sale_id>/edit/", views.edit_sale, name="edit_sale"),
+
 
 
 ]

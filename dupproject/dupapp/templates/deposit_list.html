@@ -1,0 +1,39 @@
+{% extends "base_sales.html" %}
+{% block content %}
+<h2>Customer Deposits</h2>
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead class="table-dark">
+      <tr>
+        <th>Customer</th>
+        <th>Item</th>
+        <th>Total Cost</th>
+        <th>Amount</th>
+        <th>Method</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for deposit in deposits %}
+        <tr>
+          <td>{{ deposit.customer_name }}</td>
+          <td>{{ deposit.item_name }}</td>
+          <td>UGX {{ deposit.total_cost|floatformat:0 }}</td>
+          <td>UGX {{ deposit.amount|floatformat:0 }}</td>
+          <td>{{ deposit.payment_method }}</td>
+          <td>{{ deposit.date|date:"Y-m-d" }}</td>
+          <td>
+            <a href="{% url 'view_deposit_receipt' deposit.id %}" class="btn btn-sm btn-info">
+              <i class="fas fa-receipt"></i> Temporary Receipt
+            </a>
+            <a href="{% url 'deposit_history' deposit.customer_name deposit.item_name %}" class="btn btn-sm btn-warning">
+              History
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

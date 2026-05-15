@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
-from .models import Sale, Payment,Stock,SupplierPayment, Supplier
+from django.contrib import messages
+from .models import Sale, Payment,Stock,SupplierPayment, Supplier, Deposit
+from .forms import SaleForm  # assuming you have a ModelForm
+
 import datetime
 
 
@@ -67,18 +70,16 @@ def add_payment(request,sale_id):
 
 def edit_sale(request, sale_id):
     sale = get_object_or_404(Sale, id=sale_id)
-    if request.method == 'POST':
-        sale.item_name = request.POST['item_name']
-        sale.specification = request.POST['specification']
-        sale.quantity = request.POST['quantity']
-        sale.unit_price = request.POST['unit_price']
-        sale.total_price = request.POST['total_price']
-        sale.payment_method = request.POST['payment_method']
-        sale.customer_name = request.POST['customer_name']
-        sale.contact = request.POST['contact']
-        sale.save()
-        return redirect('sales_dashboard')
-    return render(request, 'sales_form.html', {'sale': sale})
+
+    if request.method == "POST":
+        form = SaleForm(request.POST, instance=sale)
+        if form.is_valid():
+            form.save()
+            return redirect("sales_dashboard")
+    else:
+        form = SaleForm(instance=sale)  # pre-fill with current values
+
+    return render(request, "edit_sale.html", {"form": form, "sale": sale})
 
 def delete_sale(request, sale_id):
     sale = get_object_or_404(Sale, id=sale_id)
@@ -171,7 +172,7 @@ def add_supplier_payment(request, stock_id):
        
 
 
-from django.db.models import Sum
+
 
 def stock_reports(request):
     inflow = Stock.objects.values('date_received__date').annotate(total=Sum('quantity'))
@@ -219,4 +220,78 @@ def supplier_list(request):
     suppliers = Supplier.objects.all()
     return render(request, "supplier_list.html", {"suppliers": suppliers})
 
+
+
+
+# Show all deposits
+def deposit_list(request):
+    deposits = Deposit.objects.all().order_by("-date")
+    return render(request, "deposit_list.html", {"deposits": deposits})
+
+# Add a new deposit
+def add_deposit(request):
+    if request.method == "POST":
+        customer_name = request.POST.get("customer_name")
+        item_name = request.POST.get("item_name")
+        total_cost = request.POST.get("total_cost")
+        amount = request.POST.get("amount")
+        payment_method = request.POST.get("payment_method")
+
+        if payment_method not in ["Cash", "Mobile Money"]:
+            messages.error(request, "Deposits can only be made via Cash or Mobile Money.")
+            return redirect("add_deposit")
+
+        # Generate a simple receipt number
+        receipt_number = f"DPT{Deposit.objects.count() + 1:04d}"
+
+        Deposit.objects.create(
+            customer_name=customer_name,
+            item_name=item_name,
+            total_cost=total_cost,
+            amount=amount,
+            payment_method=payment_method,
+            receipt_number=receipt_number,
+        )
+        messages.success(request, "Deposit recorded successfully.")
+        return redirect("deposit_list")
+
+    return render(request, "deposit_form.html")
+
+# View a temporary receipt for a deposit
+def view_deposit_receipt(request, deposit_id):
+    deposit = get_object_or_404(Deposit, id=deposit_id)
+    return render(request, "deposit_receipt.html", {"deposit": deposit})
+
+# Track deposit history for a customer + item
+def deposit_history(request, customer_name, item_name):
+    deposits = Deposit.objects.filter(customer_name=customer_name, item_name=item_name).order_by("date")
+    total_paid = sum(d.amount for d in deposits)
+    total_cost = deposits.first().total_cost if deposits.exists() else 0
+    balance = total_cost - total_paid
+
+    return render(request, "deposit_history.html", {
+        "customer_name": customer_name,
+        "item_name": item_name,
+        "deposits": deposits,
+        "total_paid": total_paid,
+        "total_cost": total_cost,
+        "balance": balance,
+    })
+
+
+
+
+
+def edit_stock(request, stock_id):
+    stock = get_object_or_404(Stock, id=stock_id)
+
+    if request.method == "POST":
+        form = StockForm(request.POST, instance=stock)
+        if form.is_valid():
+            form.save()
+            return redirect("stock_table")  # back to dashboard
+    else:
+        form = StockForm(instance=stock)  # pre-fill with current values
+
+    return render(request, "edit_stock.html", {"form": form, "stock": stock})
 
