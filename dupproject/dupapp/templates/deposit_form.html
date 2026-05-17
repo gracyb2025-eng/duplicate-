@@ -1,32 +1,91 @@
 {% extends "base_sales.html" %}
 {% block content %}
-<h2>Record Customer Deposit</h2>
-<form method="POST">
-  {% csrf_token %}
-  <div class="mb-3">
-    <label class="form-label">Customer Name</label>
-    <input type="text" name="customer_name" class="form-control" required>
+
+<style>
+  /* Main container */
+  .deposit-container {
+    background: #fff;
+    border-radius: 12px;
+    margin: 40px auto;
+    max-width: 650px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    overflow: hidden;
+  }
+
+  /* Black header strip */
+  .deposit-header {
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    padding: 15px;
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+
+  /* Form body */
+  .deposit-body {
+    padding: 25px;
+  }
+
+  /* Button hover effects */
+  .btn-success, .btn-danger {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .btn-success:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 128, 0, 0.3);
+  }
+  .btn-danger:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+  }
+</style>
+
+<div class="deposit-container">
+  <!-- Black header line -->
+  <div class="deposit-header">
+    Record Customer Deposit
   </div>
-  <div class="mb-3">
-    <label class="form-label">Item</label>
-    <input type="text" name="item_name" class="form-control" required>
+
+  <!-- Form body -->
+  <div class="deposit-body">
+    <form method="POST">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">Customer Name</label>
+        <input type="text" name="customer_name" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Item</label>
+        <input type="text" name="item_name" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Total Item Cost</label>
+        <input type="number" name="total_cost" class="form-control" required min="1">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Deposit Amount</label>
+        <input type="number" name="amount" class="form-control" required min="1">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Payment Method</label>
+        <select name="payment_method" class="form-select" required>
+          <option value="Cash">Cash</option>
+          <option value="Mobile Money">Mobile Money</option>
+        </select>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="d-flex justify-content-center mt-4">
+        <button type="submit" class="btn btn-success me-3">
+          <i class="fas fa-save"></i> Save Deposit
+        </button>
+        <a href="{% url 'deposit_list' %}" class="btn btn-danger">
+          <i class="fas fa-times-circle"></i> Cancel
+        </a>
+      </div>
+    </form>
   </div>
-  <div class="mb-3">
-    <label class="form-label">Total Item Cost</label>
-    <input type="number" name="total_cost" class="form-control" required min="1">
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Deposit Amount</label>
-    <input type="number" name="amount" class="form-control" required min="1">
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Payment Method</label>
-    <select name="payment_method" class="form-select" required>
-      <option value="Cash">Cash</option>
-      <option value="Mobile Money">Mobile Money</option>
-    </select>
-  </div>
-  <button type="submit" class="btn btn-success">Save Deposit</button>
-  <a href="{% url 'deposit_list' %}" class="btn btn-secondary">Cancel</a>
-</form>
+</div>
+
 {% endblock %}

@@ -15,11 +15,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.urls import path
 from dupapp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("", views.sales_dashboard, name="home"), 
+    path("", views.landing_page, name="landing"), 
     path("dashboard/", views.admin_dashboard, name="admin_dashboard"), 
     path("sales/dashboard/", views.sales_dashboard, name="sales_dashboard"),
     path("sales/form/", views.save_sale, name="save_sale"),
@@ -43,7 +44,5 @@ urlpatterns = [
     path("deposits/<str:customer_name>/<str:item_name>/history/", views.deposit_history, name="deposit_history"),
     path("stock/<int:stock_id>/edit/", views.edit_stock, name="edit_stock"),
     path("sales/<int:sale_id>/edit/", views.edit_sale, name="edit_sale"),
-
-
-
+    path("login/", auth_views.LoginView.as_view(template_name="login.html"), name="login"),
 ]

@@ -295,3 +295,5 @@ def edit_stock(request, stock_id):
 
     return render(request, "edit_stock.html", {"form": form, "stock": stock})
 
+def landing_page(request):
+    return render(request, 'landing.html')

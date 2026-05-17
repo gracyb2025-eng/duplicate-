@@ -1,93 +1,160 @@
 {% extends "base_admin.html" %}
 {% block content %}
-<h2>Admin Dashboard</h2>
 
-<div class="row mb-3">
-  <div class="col-md-3">
-    <div class="card bg-info text-white text-center">
-      <div class="card-body">
-        <h5>Total Stock Value</h5>
-        <p>UGX {{ total_stock_value }}</p>
-      </div>
-    </div>
+<style>
+  /* Main containers */
+  .cards-container {
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    margin: 20px auto;
+    max-width: 1200px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .fields-container {
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    margin: 30px auto;
+    max-width: 1200px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  }
+
+  /* Heading */
+  .page-heading {
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    padding: 15px;
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+    border-radius: 8px;
+  }
+
+  /* Cards */
+  .card {
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 500;
+    padding: 20px;
+    flex: 1;
+    min-width: 250px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  }
+
+  /* Table styling */
+  .table thead th {
+    background-color: #000; /* black header strip */
+    color: #fff;
+    text-align: center;
+  }
+  .table td {
+    text-align: center;
+    vertical-align: middle;
+  }
+</style>
+
+<!-- Heading -->
+<h2 class="page-heading">Admin Dashboard</h2>
+
+<!-- Cards container -->
+<div class="cards-container">
+  <div class="card bg-success text-white">
+    <i class="fas fa-boxes"></i>
+    <h5>Total Stock Value</h5>
+    <p>UGX {{ total_stock_value }}</p>
   </div>
-
-  <div class="col-md-3">
-    <div class="card bg-warning text-dark text-center">
-      <div class="card-body">
-        <h5>Low Stock Items</h5>
-        <p>{{ low_stock.count }}</p>
-      </div>
-    </div>
+  <div class="card bg-danger text-white">
+    <i class="fas fa-exclamation-triangle"></i>
+    <h5>Low Stock Items</h5>
+    <p>{{ low_stock.count }}</p>
   </div>
-
-  <div class="col-md-3">
-    <div class="card bg-danger text-white text-center">
-      <div class="card-body">
-        <h5>Suppliers on Credit</h5>
-        <p>{{ supplier_credit.count }}</p>
-      </div>
-    </div>
+  <div class="card bg-danger text-white">
+    <i class="fas fa-handshake"></i>
+    <h5>Suppliers on Credit</h5>
+    <p>{{ supplier_credit.count }}</p>
   </div>
-
-  <div class="col-md-3">
-    <div class="card bg-success text-white text-center">
-      <div class="card-body">
-        <h5>Total Suppliers</h5>
-        <p>{{ suppliers.count }}</p>
-      </div>
-    </div>
+  <div class="card bg-success text-white">
+    <i class="fas fa-users"></i>
+    <h5>Total Suppliers</h5>
+    <p>{{ suppliers.count }}</p>
+  </div>
+  <div class="card bg-success text-white">
+    <i class="fas fa-truck"></i>
+    <h5>Transport Revenue</h5>
+    <p>UGX {{ transport_revenue }}</p>
+  </div>
+  <div class="card bg-danger text-white">
+    <i class="fas fa-shipping-fast"></i>
+    <h5>Free Deliveries</h5>
+    <p>{{ free_deliveries }}</p>
   </div>
 </div>
 
-<div class="row mb-3">
-  <div class="col-md-6">
-    <div class="card bg-secondary text-white text-center">
-      <div class="card-body">
-        <h5>Transport Revenue</h5>
-        <p>UGX {{ transport_revenue }}</p>
-      </div>
-    </div>
-  </div>
+<!-- Fields container -->
+<div class="fields-container">
+  <h4>Stock Summary</h4>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Item</th><th>Spec</th><th>Qty</th><th>Supplier</th><th>Balance</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for stock in stocks %}
+        <tr {% if stock.quantity < 10 %} class="table-danger" {% endif %}>
+          <td>{{ stock.item_name }}</td>
+          <td>{{ stock.specification }}</td>
+          <td>{{ stock.quantity }}</td>
+          <td>{{ stock.supplier.name }}</td>
+          <td>{{ stock.balance }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
-  <div class="col-md-6">
-    <div class="card bg-info text-dark text-center">
-      <div class="card-body">
-        <h5>Free Deliveries</h5>
-        <p>{{ free_deliveries }}</p>
-      </div>
-    </div>
-  </div>
+  <h4>Supplier List</h4>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th><th>Email</th><th>Contact</th><th>Address</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for supplier in suppliers %}
+        <tr>
+          <td>{{ supplier.name }}</td>
+          <td>{{ supplier.email }}</td>
+          <td>{{ supplier.contact }}</td>
+          <td>{{ supplier.address }}</td>
+          <td>
+            <a href="{% url 'edit_supplier' supplier.id %}" class="btn btn-sm btn-success">
+              <i class="fas fa-edit"></i> Edit
+            </a>
+            <a href="{% url 'delete_supplier' supplier.id %}" class="btn btn-sm btn-danger">
+              <i class="fas fa-trash"></i> Delete
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 
-<h4> Stock Summary</h4>
-<table class="table table-bordered">
-  <tr><th>Item</th><th>Spec</th><th>Qty</th><th>Supplier</th><th>Balance</th></tr>
-  {% for stock in stocks %}
-    <tr {% if stock.quantity < 10 %} class="table-danger" {% endif %}>
-      <td>{{ stock.item_name }}</td>
-      <td>{{ stock.specification }}</td>
-      <td>{{ stock.quantity }}</td>
-      <td>{{ stock.supplier.name }}</td>
-      <td>{{ stock.balance }}</td>
-    </tr>
-  {% endfor %}
-</table>
-
-<h4> Supplier List</h4>
-<table class="table table-striped">
-  <tr><th>Name</th><th>Email</th><th>Contact</th><th>Address</th><th>Actions</th></tr>
-  {% for supplier in suppliers %}
-    <tr>
-      <td>{{ supplier.name }}</td>
-      <td>{{ supplier.email }}</td>
-      <td>{{ supplier.contact }}</td>
-      <td>{{ supplier.address }}</td>
-      <td>
-        <a href="{% url 'edit_supplier' supplier.id %}" class="btn btn-sm btn-info">Edit</a>
-        <a href="{% url 'delete_supplier' supplier.id %}" class="btn btn-sm btn-danger">Delete</a>
-      </td>
-    </tr>
-  {% endfor %}
-</table>
 {% endblock %}
