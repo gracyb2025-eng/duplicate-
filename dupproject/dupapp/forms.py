@@ -1,5 +1,5 @@
 from django import forms
-from .models import Sale
+from .models import Sale, Stock
 
 class SaleForm(forms.ModelForm):
     class Meta:
@@ -24,3 +24,18 @@ class SaleForm(forms.ModelForm):
             "customer_name": forms.TextInput(attrs={"class": "form-control"}),
             "contact": forms.TextInput(attrs={"class": "form-control"}),
         }
+
+
+class StockForm(forms.ModelForm):
+    class Meta:
+        model = Stock
+        fields = [
+            "item_name",
+            "specification",
+            "quantity",
+            "unit_cost",
+            "selling_price",
+            "supplier",
+            "payment_method",
+            "amount_paid",
+        ]

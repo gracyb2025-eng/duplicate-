@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum
 from django.contrib import messages
 from .models import Sale, Payment,Stock,SupplierPayment, Supplier, Deposit
-from .forms import SaleForm  # assuming you have a ModelForm
+from .forms import SaleForm, StockForm  # assuming you have a ModelForm
 
 import datetime
 
@@ -81,10 +81,7 @@ def edit_sale(request, sale_id):
 
     return render(request, "edit_sale.html", {"form": form, "sale": sale})
 
-def delete_sale(request, sale_id):
-    sale = get_object_or_404(Sale, id=sale_id)
-    sale.delete()
-    return redirect('sales_dashboard')
+
 
 def reports(request):
     daily_sales = Sale.objects.values('date__date').annotate(total=Sum('total_price'))
@@ -94,10 +91,9 @@ def reports(request):
         "payment_methods": payment_methods,
     })
 
-
 def stock_dashboard(request):
     stocks = Stock.objects.all()
-    total_value = stocks.aggregate(Sum('quantity'))['quantity__sum']
+    total_value = sum([s.stock_value() for s in stocks]) if stocks else 0
     low_stock = stocks.filter(quantity__lt=10)
     supplier_credit = Stock.objects.filter(payment_method='Credit')
     return render(request, 'stock_dashboard.html', {
@@ -108,12 +104,13 @@ def stock_dashboard(request):
     })
 
 def add_stock(request):
+    suppliers = Supplier.objects.all()
     if request.method == 'POST':
         supplier_id = request.POST.get('supplier')
-        supplier = Supplier.objects.get(id=supplier_id)
+        supplier = get_object_or_404(Supplier, id=supplier_id)
         Stock.objects.create(
             item_name=request.POST['item_name'],
-             specification=request.POST["specification"],
+            specification=request.POST.get("specification"),
             quantity=request.POST["quantity"],
             unit_cost=request.POST["unit_cost"],
             selling_price=request.POST["selling_price"],
@@ -122,29 +119,33 @@ def add_stock(request):
             amount_paid=request.POST.get("amount_paid", 0)
         )
         return redirect("stock_dashboard")
-    suppliers = Supplier.objects.all()
     return render(request, "stock_form.html", {"suppliers": suppliers})
 
 def edit_stock(request, stock_id):
     stock = get_object_or_404(Stock, id=stock_id)
+    suppliers = Supplier.objects.all()
     if request.method == "POST":
         stock.item_name = request.POST["item_name"]
-        stock.specification = request.POST["specification"]
+        stock.specification = request.POST.get("specification")
         stock.quantity = request.POST["quantity"]
         stock.unit_cost = request.POST["unit_cost"]
         stock.selling_price = request.POST["selling_price"]
+        stock.supplier = get_object_or_404(Supplier, id=request.POST["supplier"])
+        stock.payment_method = request.POST["payment_method"]
+        stock.amount_paid = request.POST.get("amount_paid", 0)
         stock.save()
         return redirect("stock_dashboard")
-    return render(request, "edit_stock.html", {"stock": stock})
+    return render(request, "edit_stock.html", {"stock": stock, "suppliers": suppliers})
 
 def view_stock(request, stock_id):
     stock = get_object_or_404(Stock, id=stock_id)
     return render(request, "view_stock.html", {"stock": stock})
 
-def delete_stock(request, stock_id):
-    stock = get_object_or_404(Stock, id=stock_id)
-    stock.delete()
-    return redirect("stock_dashboard")
+
+
+def supplier_list(request):
+    suppliers = Supplier.objects.all()
+    return render(request, "supplier_list.html", {"suppliers": suppliers})
 
 def add_supplier(request):
     if request.method == "POST":
@@ -154,8 +155,25 @@ def add_supplier(request):
             contact=request.POST["contact"],
             address=request.POST["address"]
         )
-        return redirect("stock_dashboard")
+        return redirect("add_stock")  # redirect back to stock form
     return render(request, "supplier_form.html")
+
+def edit_supplier(request, supplier_id):
+    supplier = get_object_or_404(Supplier, id=supplier_id)
+    if request.method == "POST":
+        supplier.name = request.POST["name"]
+        supplier.email = request.POST["email"]
+        supplier.contact = request.POST["contact"]
+        supplier.address = request.POST["address"]
+        supplier.save()
+        return redirect("supplier_list")
+    return render(request, "edit_supplier.html", {"supplier": supplier})
+
+# Delete supplier
+def delete_supplier(request, supplier_id):
+    supplier = get_object_or_404(Supplier, id=supplier_id)
+    supplier.delete()
+    return redirect("supplier_list")
 
 def add_supplier_payment(request, stock_id):
     stock = get_object_or_404(Stock, id=stock_id)

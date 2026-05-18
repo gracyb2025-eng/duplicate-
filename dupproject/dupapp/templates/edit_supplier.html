@@ -1,0 +1,9 @@
+<form method="POST">
+  {% csrf_token %}
+  <input type="text" name="name" value="{{ supplier.name }}" required>
+  <input type="email" name="email" value="{{ supplier.email }}" required>
+  <input type="text" name="contact" value="{{ supplier.contact }}">
+  <input type="text" name="address" value="{{ supplier.address }}">
+  <input type="text" name="nin" value="{{ supplier.nin }}">
+  <button type="submit" class="btn btn-success">Update Supplier</button>
+</form>

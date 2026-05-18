@@ -137,9 +137,7 @@
           <a href="{% url 'edit_sale' sale.id %}" class="btn btn-sm btn-info" title="Edit Sale">
             <i class="fa-solid fa-pen-to-square"></i>
           </a>
-          <a href="{% url 'delete_sale' sale.id %}" class="btn btn-sm btn-danger" title="Delete Sale">
-            <i class="fa-solid fa-trash"></i>
-          </a>
+          
           {% if sale.payment_method == "Credit" and sale.balance > 0 %}
             <a href="{% url 'add_payment' sale.id %}" class="btn btn-sm btn-warning" title="Add Payment">
               <i class="fa-solid fa-pencil"></i>
