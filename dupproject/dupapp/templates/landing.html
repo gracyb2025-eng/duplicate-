@@ -12,14 +12,8 @@
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
+      background-attachment: fixed; /* keeps background fixed even when scrolling */
       height: 100vh;
-      animation: moveBackground 20s ease-in-out infinite alternate;
-    }
-
-    @keyframes moveBackground {
-      0% { background-position: center; }
-      50% { background-position: top right; }
-      100% { background-position: center left; }
     }
 
     .logo {
@@ -30,7 +24,7 @@
     .logo img {
       width: 250px;
       opacity: 0;
-      animation: fadeIn 2s ease forwards;
+      animation: fadeIn 2s ease forwards; /* logo fade-in only */
     }
 
     @keyframes fadeIn {

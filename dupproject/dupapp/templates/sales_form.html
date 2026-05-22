@@ -47,6 +47,14 @@
     Add New Sale
   </div>
 
+{% if errors %}
+    <div style="color:red;">
+        {% for error in errors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
   <!-- Form body -->
   <div class="form-body">
     <form method="POST" action="{% if sale %}{% url 'edit_sale' sale.id %}{% else %}{% url 'save_sale' %}{% endif %}">

@@ -3,7 +3,7 @@ from django.db.models import Sum
 from django.contrib import messages
 from .models import Sale, Payment,Stock,SupplierPayment, Supplier, Deposit
 from .forms import SaleForm, StockForm  # assuming you have a ModelForm
-
+from django.core.exceptions import ValidationError
 import datetime
 
 
@@ -33,26 +33,49 @@ def sales_dashboard(request):
 
 def save_sale(request):
     if request.method == 'POST':
-        total_price = float(request.POST['total_price'])
-        distance_km = int(request.POST.get('distance_km', 0))
+        try:
+            total_price = float(request.POST['total_price'])
+            distance_km = int(
+                request.POST.get('distance_km', 0)
+            )
 
-        if total_price >= 500000 and distance_km <= 10:
-            transport_cost = 0
-        else:
-            transport_cost = 30000
-        sale = Sale.objects.create(
-            item_name=request.POST['item_name'],
-            specification=request.POST['specification'],
-            quantity=request.POST['quantity'],
-            unit_price=request.POST['unit_price'],
-            total_price=request.POST['total_price'],
-            payment_method=request.POST['payment_method'],
-            customer_name=request.POST['customer_name'],
-            contact=request.POST['contact'],
-            receipt_number=generate_receipt_number()
-        )
-        return redirect('sales_dashboard')
+            # TRANSPORT LOGIC
+            if total_price >= 500000 and distance_km <= 10:
+                transport_cost = 0
+            else:
+                transport_cost = 30000
+
+            sale = Sale(
+
+                item_name=request.POST['item_name'],
+                specification=request.POST['specification'],
+                quantity=request.POST['quantity'],
+                unit_price=request.POST['unit_price'],
+                total_price=request.POST['total_price'],
+                payment_method=request.POST['payment_method'],
+                customer_name=request.POST['customer_name'],
+                contact=request.POST['contact'],
+                nin=request.POST['nin'],
+                receipt_number=generate_receipt_number(),
+                distance_km=distance_km,
+                transport_cost=transport_cost,
+            )
+
+            # RUN VALIDATIONS
+            sale.full_clean()
+            # SAVE
+            sale.save()
+            return redirect('sales_dashboard')
+        
+        except ValidationError as e:
+
+            return render(request, 'sales_form.html', {
+                'errors': e.messages
+            })
+
     return render(request, 'sales_form.html')
+
+
 
 def view_receipt(request, sale_id):
     sale = get_object_or_404(Sale, id=sale_id)
