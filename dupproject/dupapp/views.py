@@ -212,9 +212,6 @@ def add_supplier_payment(request, stock_id):
     return render(request, "supplier_payment_form.html", {"stock": stock})
        
 
-
-
-
 def stock_reports(request):
     inflow = Stock.objects.values('date_received__date').annotate(total=Sum('quantity'))
     outflow = []  # later link to your Sale model if you have one
@@ -338,3 +335,9 @@ def edit_stock(request, stock_id):
 
 def landing_page(request):
     return render(request, 'landing.html')
+
+def login_view(request):
+    if request != 'POST':
+        return render('login.html')
+    username = request.POST.get('username')
+    password = request.POST.get('password')

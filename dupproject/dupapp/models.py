@@ -103,9 +103,7 @@ class Sale(models.Model):
 class Payment(models.Model):
 
     sale = models.ForeignKey(Sale,related_name="payments",on_delete=models.CASCADE)
-
     amount = models.DecimalField(max_digits=10,decimal_places=2 )
-
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -115,11 +113,8 @@ class Payment(models.Model):
 class Supplier(models.Model):
 
     name = models.CharField(max_length=100, unique=True)
-
     email = models.EmailField(unique=True)
-
     contact = models.CharField(max_length=20,blank=True,null=True)
-
     address = models.CharField(max_length=200,blank=True,null=True)
 
     def __str__(self):
