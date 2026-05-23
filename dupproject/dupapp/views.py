@@ -219,7 +219,7 @@ def stock_reports(request):
     supplier_credit = Stock.objects.filter(payment_method="Credit")
     low_stock = Stock.objects.filter(quantity__lt=10)
 
-    return render(request, "reports.html", {
+    return render(request, "reports_stock.html", {
         "inflow": inflow,
         "outflow": outflow,
         "current_stock": current_stock,
@@ -336,8 +336,116 @@ def edit_stock(request, stock_id):
 def landing_page(request):
     return render(request, 'landing.html')
 
-def login_view(request):
-    if request != 'POST':
-        return render('login.html')
-    username = request.POST.get('username')
-    password = request.POST.get('password')
+
+
+def admin_sales_dashboard(request):
+
+    sales = Sale.objects.all().order_by("-date")
+
+    total_sales = Sale.objects.aggregate(
+        Sum('total_price')
+    )['total_price__sum'] or 0
+
+    total_deposits = Payment.objects.aggregate(
+        Sum('amount')
+    )['amount__sum'] or 0
+
+    outstanding_credit = sum(
+        sale.balance()
+        for sale in Sale.objects.filter(
+            payment_method='Credit'
+        )
+    )
+
+    paid_sales = Sale.objects.filter(
+        payment_method__in=['Cash', 'Mobile']
+    ).count()
+
+    unpaid_sales = sum(
+        1
+        for sale in Sale.objects.filter(
+            payment_method='Credit'
+        )
+        if sale.balance() > 0
+    )
+
+    context = {
+        'sales': sales,
+        'total_sales': total_sales,
+        'total_deposits': total_deposits,
+        'outstanding_credit': outstanding_credit,
+        'paid_sales': paid_sales,
+        'unpaid_sales': unpaid_sales,
+    }
+
+    return render(
+        request,
+        'admin_sales_dashboard.html',
+        context
+    )
+
+
+
+def admin_stock_dashboard(request):
+
+    stocks = Stock.objects.all()
+
+    total_value = sum(
+        [s.stock_value() for s in stocks]
+    ) if stocks else 0
+
+    low_stock = stocks.filter(quantity__lt=10)
+
+    supplier_credit = Stock.objects.filter(
+        payment_method='Credit'
+    )
+
+    context = {
+        'stocks': stocks,
+        'total_value': total_value,
+        'low_stock': low_stock,
+        'supplier_credit': supplier_credit,
+    }
+
+    return render(
+        request,
+        'admin_stock_dashboard.html',
+        context
+    )
+
+
+def admin_sales_dashboard(request):
+    sales = Sale.objects.all().order_by("-date")
+    total_sales = Sale.objects.aggregate(Sum('total_price'))['total_price__sum'] or 0
+    total_deposits = Payment.objects.aggregate(Sum('amount'))['amount__sum'] or 0
+    outstanding_credit = sum(
+        sale.balance() for sale in Sale.objects.filter(payment_method='Credit')
+    )
+    unpaid_sales = sum(
+        1 for sale in Sale.objects.filter(payment_method='Credit')
+        if sale.balance() > 0
+    )
+
+    context = {
+        'sales': sales,
+        'total_sales': total_sales,
+        'total_deposits': total_deposits,
+        'outstanding_credit': outstanding_credit,
+        'unpaid_sales': unpaid_sales,
+    }
+
+    return render(request, "admin_sales_dashboard.html", context)
+
+
+def admin_stock_dashboard(request):
+    stocks = Stock.objects.all()
+    total_value = sum([s.stock_value() for s in stocks]) if stocks else 0
+    low_stock = stocks.filter(quantity__lt=10)
+
+    context = {
+        'stocks': stocks,
+        'total_value': total_value,
+        'low_stock': low_stock,
+    }
+
+    return render(request, "admin_stock_dashboard.html", context)

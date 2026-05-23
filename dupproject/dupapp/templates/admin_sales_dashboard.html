@@ -1,0 +1,234 @@
+{% extends 'base_admin.html' %}
+
+{% block content %}
+{% load humanize %}
+
+<style>
+
+  /* Container for all cards */
+  .cards-container {
+    background: #fff;
+    border-radius: 15px;
+    padding: 15px; /* reduced from 30px */
+    margin: 10px auto; /* reduced */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+    max-width: 1100px;
+  }
+
+  /* Card styling */
+  .cards .card {
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 12px; /* reduced */
+  }
+
+  .cards .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.18);
+  }
+
+  /* Smaller card body */
+  .cards .card-body {
+    padding: 15px;
+  }
+
+  /* Smaller icons */
+  .cards .card i {
+    font-size: 1.6rem !important;
+    margin-bottom: 8px;
+  }
+
+  /* Smaller headings */
+  .cards .card h5 {
+    font-size: 1rem;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  /* Smaller paragraph text */
+  .cards .card p {
+    font-size: 0.95rem;
+    margin-bottom: 5px;
+  }
+
+  /* Table container */
+  .table-container {
+    background: #fff;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-top: 20px;
+  }
+
+  /* Table header styling */
+  .table thead th {
+    background-color: #343a40;
+    color: #fff;
+    text-align: center;
+    font-weight: 600;
+  }
+
+</style>
+
+<h2 class="text-center mb-3">Sales Dashboard</h2>
+
+<!-- Cards container -->
+<div class="cards-container">
+
+  <div class="cards">
+
+    <div class="row justify-content-center g-3">
+
+      <!-- Total Sales + Customer Deposits stacked -->
+      <div class="col-md-3 text-center">
+
+        <div class="card bg-primary text-white">
+          <div class="card-body">
+            <i class="fas fa-shopping-cart"></i>
+            <h5>Total Sales</h5>
+            <p>UGX {{ total_sales|intcomma }}</p>
+          </div>
+        </div>
+
+        <div class="card bg-warning text-white">
+          <div class="card-body">
+            <h5 class="card-title">Customer Deposits</h5>
+
+            <p class="card-text">
+              Track deposits made by customers
+            </p>
+
+            <a href="{% url 'deposit_list' %}"
+               class="btn btn-light btn-sm">
+              View Deposits
+            </a>
+
+            <a href="{% url 'add_deposit' %}"
+               class="btn btn-dark btn-sm">
+              Add Deposit
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Outstanding Credit -->
+      <div class="col-md-3 text-center">
+
+        <div class="card bg-warning text-white">
+          <div class="card-body">
+            <i class="fas fa-handshake"></i>
+            <h5>Outstanding Credit</h5>
+            <p>UGX {{ outstanding_credit|intcomma }}</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Deposits Received + Unpaid Sales stacked -->
+      <div class="col-md-3 text-center">
+
+        <div class="card bg-success text-white">
+          <div class="card-body">
+            <i class="fas fa-money-bill-wave"></i>
+            <h5>Deposits Received</h5>
+            <p>UGX {{ total_deposits|intcomma }}</p>
+          </div>
+        </div>
+
+        <div class="card bg-danger text-white">
+          <div class="card-body">
+            <i class="fas fa-exclamation-circle"></i>
+            <h5>Unpaid Sales</h5>
+            <p>{{ unpaid_sales|intcomma }}</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Add Sale button -->
+<div class="text-center mt-3">
+  <a href="{% url 'save_sale' %}" class="btn btn-success">
+    <i class="fas fa-plus"></i> Add Sale
+  </a>
+</div>
+
+<!-- Sales table -->
+<div class="table-container">
+
+  <table class="table table-bordered">
+
+    <thead>
+      <tr>
+        <th>Receipt No</th>
+        <th>Item</th>
+        <th>Total Price</th>
+        <th>Amount Paid</th>
+        <th>Balance</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      {% for sale in sales %}
+
+      <tr>
+        <td>{{ sale.receipt_number }}</td>
+        <td>{{ sale.item_name }}</td>
+        <td>{{ sale.total_price }}</td>
+        <td>{{ sale.amount_paid }}</td>
+        <td>{{ sale.balance }}</td>
+        <td>{{ sale.status }}</td>
+
+        <td>
+
+          <a href="{% url 'view_receipt' sale.id %}"
+             class="btn btn-sm btn-primary"
+             title="View Receipt">
+
+            <i class="fa-solid fa-receipt"></i>
+
+          </a>
+
+          <a href="{% url 'edit_sale' sale.id %}"
+             class="btn btn-sm btn-info"
+             title="Edit Sale">
+
+            <i class="fa-solid fa-pen-to-square"></i>
+
+          </a>
+
+          {% if sale.payment_method == "Credit" and sale.balance > 0 %}
+
+          <a href="{% url 'add_payment' sale.id %}"
+             class="btn btn-sm btn-warning"
+             title="Add Payment">
+
+            <i class="fa-solid fa-pencil"></i>
+
+          </a>
+
+          {% endif %}
+
+        </td>
+
+      </tr>
+
+      {% endfor %}
+
+    </tbody>
+
+  </table>
+
+</div>
+
+{% endblock %}

@@ -20,11 +20,20 @@ from django.urls import path
 from dupapp import views
 
 urlpatterns = [
+
+    # Django admin
     path('admin/', admin.site.urls),
-    path("", views.landing_page, name="landing"), 
-    path("dashboard/", views.admin_dashboard, name="admin_dashboard"), 
+
+    # Landing page
+    path("", views.landing_page, name="landing"),
+
+    # ================= ADMIN DASHBOARD =================
+    path("dashboard/", views.admin_dashboard, name="admin_dashboard"),
+    path("dashboard/sales/", views.admin_sales_dashboard, name="admin_sales_dashboard"),
+    path("dashboard/stock/", views.admin_stock_dashboard, name="admin_stock_dashboard"),
 
     # --- Sales ---
+    path('sales/', views.sales_dashboard, name='sales_dashboard'),
     path("sales/dashboard/", views.sales_dashboard, name="sales_dashboard"),
     path("sales/form/", views.save_sale, name="save_sale"),
     path("receipt/<int:sale_id>/", views.view_receipt, name="view_receipt"),
@@ -32,27 +41,30 @@ urlpatterns = [
     path("sales/edit/<int:sale_id>/", views.edit_sale, name="edit_sale"),
     path("reports/", views.reports, name="reports"),
 
-    # --- Stock ---
+    # ================= STOCK =================
     path("stock/", views.stock_dashboard, name="stock_dashboard"),
     path("stock/add/", views.add_stock, name="add_stock"),
     path("stock/edit/<int:stock_id>/", views.edit_stock, name="edit_stock"),
     path("stock/view/<int:stock_id>/", views.view_stock, name="view_stock"),
-   
     path("stock/payment/<int:stock_id>/", views.add_supplier_payment, name="add_supplier_payment"),
     path("stock/reports/", views.stock_reports, name="stock_reports"),
 
-    # --- Suppliers ---
+    # ================= SUPPLIERS =================
     path("suppliers/", views.supplier_list, name="supplier_list"),
     path("suppliers/add/", views.add_supplier, name="add_supplier"),
     path("suppliers/edit/<int:supplier_id>/", views.edit_supplier, name="edit_supplier"),
     path("suppliers/delete/<int:supplier_id>/", views.delete_supplier, name="delete_supplier"),
 
-    # --- Deposits ---
+    # ================= DEPOSITS =================
     path("deposits/", views.deposit_list, name="deposit_list"),
     path("deposits/add/", views.add_deposit, name="add_deposit"),
     path("deposits/<int:deposit_id>/receipt/", views.view_deposit_receipt, name="view_deposit_receipt"),
     path("deposits/<str:customer_name>/<str:item_name>/history/", views.deposit_history, name="deposit_history"),
 
-    # --- Auth ---
-    path("login/", auth_views.LoginView.as_view(template_name="login.html"), name="login"),
+    # ================= LOGIN =================
+    path(
+        "login/",
+        auth_views.LoginView.as_view(template_name="login.html"),
+        name="login"
+    ),
 ]
