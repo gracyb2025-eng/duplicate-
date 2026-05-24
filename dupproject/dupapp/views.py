@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Sum
+from django.db.models import Sum,F
 from django.contrib import messages
 from .models import Sale, Payment,Stock,SupplierPayment, Supplier, Deposit
 from .forms import SaleForm, StockForm  # assuming you have a ModelForm
 from django.core.exceptions import ValidationError
 import datetime
+
 
 
 # Create your views here.
@@ -32,12 +33,46 @@ def sales_dashboard(request):
     return render(request, 'sales_dashboard.html', context)
 
 def save_sale(request):
+
     if request.method == 'POST':
+
         try:
-            total_price = float(request.POST['total_price'])
+            total_price = float(
+                request.POST['total_price']
+            )
+
             distance_km = int(
                 request.POST.get('distance_km', 0)
             )
+
+            quantity_sold = int(
+                request.POST['quantity']
+            )
+
+            item_name = request.POST['item_name']
+            specification = request.POST['specification']
+
+            # FIND STOCK ITEM
+            stock = Stock.objects.filter(
+                item_name=item_name,
+                specification=specification
+            ).first()
+
+            # CHECK IF ITEM EXISTS
+            if not stock:
+                return render(request, 'sales_form.html', {
+                    'errors': [
+                        'Item does not exist in stock.'
+                    ]
+                })
+
+            # CHECK AVAILABLE QUANTITY
+            if stock.quantity < quantity_sold:
+                return render(request, 'sales_form.html', {
+                    'errors': [
+                        f'Only {stock.quantity} items left in stock.'
+                    ]
+                })
 
             # TRANSPORT LOGIC
             if total_price >= 500000 and distance_km <= 10:
@@ -47,9 +82,9 @@ def save_sale(request):
 
             sale = Sale(
 
-                item_name=request.POST['item_name'],
-                specification=request.POST['specification'],
-                quantity=request.POST['quantity'],
+                item_name=item_name,
+                specification=specification,
+                quantity=quantity_sold,
                 unit_price=request.POST['unit_price'],
                 total_price=request.POST['total_price'],
                 payment_method=request.POST['payment_method'],
@@ -61,12 +96,18 @@ def save_sale(request):
                 transport_cost=transport_cost,
             )
 
-            # RUN VALIDATIONS
+            # VALIDATE
             sale.full_clean()
-            # SAVE
+
+            # SAVE SALE
             sale.save()
+
+            # REDUCE STOCK
+            stock.quantity -= quantity_sold
+            stock.save()
+
             return redirect('sales_dashboard')
-        
+
         except ValidationError as e:
 
             return render(request, 'sales_form.html', {
@@ -449,3 +490,43 @@ def admin_stock_dashboard(request):
     }
 
     return render(request, "admin_stock_dashboard.html", context)
+
+
+
+def admin_reports(request):
+    daily_sales = Sale.objects.values(
+        'date__date'
+    ).annotate(total=Sum('total_price'))
+
+    payment_methods = Sale.objects.values(
+        'payment_method'
+    ).annotate(total=Sum('total_price'))
+
+    return render(request, "reports.html", {
+        "daily_sales": daily_sales,
+        "payment_methods": payment_methods,
+    })
+
+
+
+def admin_stock_reports(request):
+    inflow = Stock.objects.values(
+        'date_received__date'
+    ).annotate(total=Sum('quantity'))
+
+    current_stock = Stock.objects.all()
+
+    supplier_credit = Stock.objects.filter(
+        payment_method="Credit"
+    )
+
+    low_stock = Stock.objects.filter(
+        quantity__lt=10
+    )
+
+    return render(request, "reports_stock.html", {
+        "inflow": inflow,
+        "current_stock": current_stock,
+        "supplier_credit": supplier_credit,
+        "low_stock": low_stock,
+    })

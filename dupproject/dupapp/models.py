@@ -160,7 +160,8 @@ class Stock(models.Model):
         return self.quantity * self.unit_cost
 
     def __str__(self):
-        return f"{self.item_name} - ({selfspecification} units)"
+        return f"{self.item_name} - ({self.specification})"
+        
 
 
 class SupplierPayment(models.Model):

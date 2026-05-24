@@ -31,7 +31,9 @@ urlpatterns = [
     path("dashboard/", views.admin_dashboard, name="admin_dashboard"),
     path("dashboard/sales/", views.admin_sales_dashboard, name="admin_sales_dashboard"),
     path("dashboard/stock/", views.admin_stock_dashboard, name="admin_stock_dashboard"),
+    path("dashboard/reports/",views.admin_reports,name="admin_reports"),
 
+    path("dashboard/stock-reports/",views.admin_stock_reports,name="admin_stock_reports"),
     # --- Sales ---
     path('sales/', views.sales_dashboard, name='sales_dashboard'),
     path("sales/dashboard/", views.sales_dashboard, name="sales_dashboard"),

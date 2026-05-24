@@ -1,0 +1,147 @@
+{% extends "base_stock.html" %}
+
+{% block content %}
+
+<style>
+    .edit-stock-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        max-width: 850px;
+        margin: auto;
+    }
+
+    .edit-stock-title {
+        font-weight: 700;
+        color: #212529;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .edit-stock-title i {
+        color: #0d6efd;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #343a40;
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 8px;
+        padding: 10px;
+        border: 1px solid #ced4da;
+        transition: all 0.2s ease;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.15rem rgba(13,110,253,0.25);
+    }
+
+    .btn-update {
+        background-color: #212529;
+        color: #fff;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .btn-update:hover {
+        background-color: #0d6efd;
+        transform: translateY(-2px);
+    }
+
+    .btn-back {
+        border-radius: 8px;
+        padding: 12px 25px;
+        font-weight: 600;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+</style>
+
+<div class="container mt-4">
+
+    <div class="edit-stock-card">
+
+        <h2 class="edit-stock-title">
+            <i class="fas fa-pen-to-square"></i>
+            Edit Stock
+        </h2>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Item Name</label>
+                    {{ form.item_name }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Specification</label>
+                    {{ form.specification }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Quantity</label>
+                    {{ form.quantity }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Unit Cost</label>
+                    {{ form.unit_cost }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Selling Price</label>
+                    {{ form.selling_price }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Supplier</label>
+                    {{ form.supplier }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Payment Method</label>
+                    {{ form.payment_method }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Amount Paid</label>
+                    {{ form.amount_paid }}
+                </div>
+
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn btn-update">
+                    <i class="fas fa-save"></i> Update Stock
+                </button>
+
+                <a href="{% url 'stock_dashboard' %}" class="btn btn-outline-dark btn-back">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
