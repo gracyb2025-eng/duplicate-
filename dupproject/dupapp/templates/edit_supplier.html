@@ -1,9 +1,115 @@
-<form method="POST">
-  {% csrf_token %}
-  <input type="text" name="name" value="{{ supplier.name }}" required>
-  <input type="email" name="email" value="{{ supplier.email }}" required>
-  <input type="text" name="contact" value="{{ supplier.contact }}">
-  <input type="text" name="address" value="{{ supplier.address }}">
-  <input type="text" name="nin" value="{{ supplier.nin }}">
-  <button type="submit" class="btn btn-success">Update Supplier</button>
-</form>
+{% extends 'base_admin.html' %}
+
+{% block content %}
+
+<style>
+    .supplier-card {
+        max-width: 700px;
+        margin: 40px auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .supplier-card h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #212529;
+        font-weight: bold;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #212529;
+    }
+
+    .btn-update {
+        background-color: #212529;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        transition: 0.3s;
+    }
+
+    .btn-update:hover {
+        background-color: #343a40;
+    }
+
+    .btn-back {
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        background-color: #212529;
+        color: white;
+        color: white;
+        margin-right: 10px;
+    }
+
+    .btn-back:hover {
+      background-color: #343a40;
+      color: white;
+      color: white;
+    }
+</style>
+
+<div class="supplier-card">
+
+    <h2>
+        <i class="fas fa-user-edit"></i>
+        Edit Supplier
+    </h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label class="form-label">Supplier Name</label>
+            <input type="text"
+                   name="name"
+                   class="form-control"
+                   value="{{ supplier.name }}"
+                   required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Email Address</label>
+            <input type="email"
+                   name="email"
+                   class="form-control"
+                   value="{{ supplier.email }}"
+                   required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Contact</label>
+            <input type="text"
+                   name="contact"
+                   class="form-control"
+                   value="{{ supplier.contact }}">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Address</label>
+            <input type="text"
+                   name="address"
+                   class="form-control"
+                   value="{{ supplier.address }}">
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <a href="{% url 'supplier_list' %}" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+
+            <button type="submit" class="btn-update">
+                <i class="fas fa-save"></i> Update Supplier
+            </button>
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

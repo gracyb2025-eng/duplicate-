@@ -81,9 +81,11 @@ class Sale(models.Model):
         # Uganda NIN validation
         nin_pattern = r'^[A-Z]{2}\d{12}[A-Z]$'
 
-        if not re.match(nin_pattern, self.nin):
-            raise ValidationError("Enter valid NIN like CM123456789012A")
+        if self.nin:
+            if not re.match(nin_pattern, self.nin):
+                raise ValidationError("Enter valid NIN like CM123456789012A")
 
+       
     def amount_paid(self):
         return sum(payment.amount for payment in self.payments.all())
 
@@ -139,19 +141,24 @@ class Stock(models.Model):
     amount_paid = models.DecimalField(max_digits=10,decimal_places=2,default=0)
 
     # VALIDATIONS
+   
     def clean(self):
 
-        if self.quantity <= 0:
-            raise ValidationError("Quantity must be greater than zero." )
+        if self.quantity is not None and self.quantity <= 0:
+            raise ValidationError("Quantity must be greater than zero.")
 
-        if self.unit_cost <= 0:
+        if self.unit_cost is not None and self.unit_cost <= 0:
             raise ValidationError("Unit cost must be positive.")
 
-        if self.selling_price <= self.unit_cost:
-            raise ValidationError( "Selling price must be greater than unit cost." )
+        if (
+        self.selling_price is not None and
+        self.unit_cost is not None and
+        self.selling_price <= self.unit_cost
+    ):
+            raise ValidationError("Selling price must be greater than unit cost.")
 
-        if self.amount_paid < 0:
-            raise ValidationError( "Amount paid cannot be negative.")
+        if self.amount_paid is not None and self.amount_paid < 0:
+            raise ValidationError("Amount paid cannot be negative.")
 
     def balance(self):
         return (self.quantity * self.unit_cost) - self.amount_paid

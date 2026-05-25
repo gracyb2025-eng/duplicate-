@@ -168,22 +168,29 @@ def stock_dashboard(request):
     })
 
 def add_stock(request):
-    suppliers = Supplier.objects.all()
-    if request.method == 'POST':
-        supplier_id = request.POST.get('supplier')
-        supplier = get_object_or_404(Supplier, id=supplier_id)
-        Stock.objects.create(
-            item_name=request.POST['item_name'],
-            specification=request.POST.get("specification"),
-            quantity=request.POST["quantity"],
-            unit_cost=request.POST["unit_cost"],
-            selling_price=request.POST["selling_price"],
-            supplier=supplier,
-            payment_method=request.POST["payment_method"],
-            amount_paid=request.POST.get("amount_paid", 0)
-        )
-        return redirect("stock_dashboard")
-    return render(request, "stock_form.html", {"suppliers": suppliers})
+
+    if request.method == "POST":
+
+        form = StockForm(request.POST)
+
+        if form.is_valid():
+
+            form.save()
+
+            messages.success(request, "Stock added successfully.")
+
+            return redirect("stock_dashboard")
+
+    else:
+
+        form = StockForm()
+
+        return render(request, "stock_form.html", {
+    "form": form,
+    "suppliers": Supplier.objects.all()
+})
+
+   
 
 def edit_stock(request, stock_id):
     stock = get_object_or_404(Stock, id=stock_id)

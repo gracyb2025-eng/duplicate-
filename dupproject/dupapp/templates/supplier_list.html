@@ -1,21 +1,113 @@
-<table class="table table-bordered">
-  <tr>
-    <th>Name</th>
-    <th>Email</th>
-    <th>Contact</th>
-    <th>Address</th>
-    <th>Actions</th>
-  </tr>
-  {% for supplier in suppliers %}
-    <tr>
-      <td>{{ supplier.name }}</td>
-      <td>{{ supplier.email }}</td>
-      <td>{{ supplier.contact }}</td>
-      <td>{{ supplier.address }}</td>
-      <td>
-        <a href="{% url 'edit_supplier' supplier.id %}" class="btn btn-sm btn-success">Edit</a>
-        <a href="{% url 'delete_supplier' supplier.id %}" class="btn btn-sm btn-danger">Delete</a>
-      </td>
-    </tr>
-  {% endfor %}
-</table>
+{% extends 'base_admin.html' %}
+
+{% block content %}
+
+<style>
+    .supplier-container {
+        background: #fff;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        margin-top: 20px;
+    }
+
+    .supplier-title {
+        font-weight: bold;
+        color: #212529;
+        margin-bottom: 20px;
+    }
+
+    .table thead th {
+        background-color: #212529;
+        color: white;
+        text-align: center;
+    }
+
+    .table tbody td {
+        vertical-align: middle;
+    }
+
+    .action-btn {
+        text-decoration: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        color: white;
+        font-size: 14px;
+        margin-right: 5px;
+    }
+
+    .edit-btn {
+        background-color: #0d6efd;
+    }
+
+    .edit-btn:hover {
+        background-color: #0b5ed7;
+        color: white;
+    }
+
+    .delete-btn {
+        background-color: red
+    }
+
+    .delete-btn:hover {
+        background-color: #343a40;
+        color: white;
+    }
+</style>
+
+<div class="supplier-container">
+  <div class="mb-3">
+    <a href="{% url 'admin_dashboard' %}" class="btn btn-success">
+        <i class="fas fa-arrow-left"></i> Back
+    </a>
+</div>
+
+    <h2 class="supplier-title">
+        <i class="fas fa-truck"></i>
+        Supplier List
+    </h2>
+
+    <table class="table table-bordered table-hover">
+
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Contact</th>
+                <th>Address</th>
+                <th width="180">Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for supplier in suppliers %}
+            <tr>
+                <td>{{ supplier.name }}</td>
+                <td>{{ supplier.email }}</td>
+                <td>{{ supplier.contact }}</td>
+                <td>{{ supplier.address }}</td>
+
+                <td>
+    <div class="d-flex gap-2 justify-content-center">
+
+        <a href="{% url 'edit_supplier' supplier.id %}"
+           class="btn btn-primary btn-sm">
+            <i class="fas fa-edit"></i> Edit
+        </a>
+
+        <a href="{% url 'delete_supplier' supplier.id %}"
+           class="btn btn-danger btn-sm">
+            <i class="fas fa-trash"></i>
+        </a>
+
+    </div>
+</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

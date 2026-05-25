@@ -39,3 +39,14 @@ class StockForm(forms.ModelForm):
             "payment_method",
             "amount_paid",
         ]
+
+        widgets = {
+    "item_name": forms.TextInput(attrs={"class": "form-control"}),
+    "specification": forms.TextInput(attrs={"class": "form-control"}),
+    "quantity": forms.NumberInput(attrs={"class": "form-control"}),
+    "unit_cost": forms.NumberInput(attrs={"class": "form-control"}),
+    "selling_price": forms.NumberInput(attrs={"class": "form-control"}),
+    "supplier": forms.Select(attrs={"class": "form-select"}),
+    "payment_method": forms.Select(attrs={"class": "form-select"}),
+    "amount_paid": forms.NumberInput(attrs={"class": "form-control"}),
+}
