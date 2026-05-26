@@ -120,7 +120,7 @@
       }
     </style>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     <!-- Navbar -->
     <nav class="navbar navbar-dark bg-dark">
         <div class="container-fluid">
@@ -156,13 +156,13 @@
     </div>
 
     <!-- Main Content -->
-    <div class="container mt-4">
+    <main class="container mt-4 flex-grow-1">
         {% block content %}
         {% endblock %}
-    </div>
+    </main>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3 mt-4">
+    <footer class="bg-dark text-white text-center py-3">
         <p>NYONDO Hardware LTD</p>
         <p class="mb-1">Location: Nansana, Uganda</p>
       <p class="mb-0">&copy; 2026 NYONDO General Hardware LTD. All rights reserved.</p>

@@ -102,15 +102,15 @@
         <td>{{ stock.balance }}</td>
         <td>{{ stock.date_received|date:"Y-m-d" }}</td>
         <td>
-          <a href="{% url 'view_stock' stock.id %}" class="btn btn-sm btn-primary" title="View">
+          <a href="{% url 'admin_view_stock' stock.id %}" class="btn btn-sm btn-primary" title="View">
             <i class="fas fa-eye"></i>
           </a>
-          <a href="{% url 'edit_stock' stock.id %}" class="btn btn-sm btn-success" title="Edit">
+          <a href="{% url 'admin_edit_stock' stock.id %}" class="btn btn-sm btn-success" title="Edit">
             <i class="fas fa-edit"></i>
           </a>
           
           {% if stock.payment_method == "Credit" and stock.balance > 0 %}
-            <a href="{% url 'add_supplier_payment' stock.id %}" class="btn btn-sm btn-warning" title="Add Payment">
+            <a href="{% url 'admin_add_supplier_payment' stock.id %}" class="btn btn-sm btn-warning" title="Add Payment">
               <i class="fas fa-hand-holding-usd"></i>
             </a>
           {% endif %}

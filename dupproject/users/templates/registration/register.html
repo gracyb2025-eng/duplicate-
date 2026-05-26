@@ -1,0 +1,50 @@
+{% extends 'base_admin.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow p-4">
+
+        <h2 class="mb-4 text-center">
+            Register User
+        </h2>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label>Username</label>
+                {{ form.username }}
+            </div>
+
+            <div class="mb-3">
+                <label>Email</label>
+                {{ form.email }}
+            </div>
+
+            <div class="mb-3">
+                <label>Password</label>
+                {{ form.password }}
+            </div>
+
+            <div class="mb-3">
+                <label>Role</label>
+                {{ form.role }}
+            </div>
+
+            <button type="submit"
+                    class="btn btn-dark w-100">
+
+                Register User
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

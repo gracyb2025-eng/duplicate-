@@ -10,6 +10,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 
     <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color:#f8f9fa;
+      display: flex;
+      flex-direction: column;
+    }
+    main {
+      flex: 1;
+    }
+
+
+
       /* Offcanvas menu background */
       .offcanvas {
         background-color: #212529;
@@ -124,7 +140,7 @@
       }
     </style>
   </head>
-  <body>
+  <body class="d-flex flex-column min-vh-100">
     <!-- Navbar -->
     <nav class="navbar navbar-dark bg-dark">
       <div class="container-fluid">
@@ -152,6 +168,8 @@
           <li class="list-group-item"><a href="{% url 'supplier_list' %}"><i class="fas fa-truck"></i> Suppliers</a></li>
           <li class="list-group-item"><a href="{% url 'admin_reports' %}"><i class="fas fa-chart-line"></i>Sales Reports</a></li>
           <li class="list-group-item"><a href="{% url 'admin_stock_reports' %}"><i class="fas fa-boxes"></i>Stock Reports</a></li>
+          <br>
+          <li class="list-group-item"><a href="{% url 'register_user' %}"><i class="fas fa-user-plus"></i>Register User</a></li>
         </ul>
 
         <!-- Profile section at bottom center -->
@@ -163,12 +181,12 @@
     </div>
 
     <!-- Content -->
-    <div class="container mt-4">
+    <main class="container mt-4 flex-grow-1">
       {% block content %}{% endblock %}
     </div>
 
     <!-- Footer -->
-    <footer class="bg-dark text-white text-center py-3 mt-5" style="width:100%; margin:0; padding:0;">
+    <footer class="bg-dark text-white text-center py-3 ">
       <div style="background-color:#212529; padding:15px 0;">
         <p class="mb-1">NYONDO GENERAL HARDWARE LTD</p>
         <p class="mb-1">Location: Nansana, Uganda</p>

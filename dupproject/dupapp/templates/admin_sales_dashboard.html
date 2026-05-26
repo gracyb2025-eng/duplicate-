@@ -78,76 +78,85 @@
 
   <div class="cards">
 
-    <div class="row justify-content-center g-3">
+    <div class="row g-3 justify-content-center">
 
-      <!-- Total Sales + Customer Deposits stacked -->
-      <div class="col-md-3 text-center">
-
-        <div class="card bg-primary text-white">
-          <div class="card-body">
-            <i class="fas fa-shopping-cart"></i>
-            <h5>Total Sales</h5>
-            <p>UGX {{ total_sales|intcomma }}</p>
-          </div>
+    <!-- Total Sales -->
+    <div class="col-md-3">
+        <div class="card bg-primary text-white text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-shopping-cart"></i>
+                <h5>Total Sales</h5>
+                <p>UGX {{ total_sales|intcomma }}</p>
+            </div>
         </div>
-
-        <div class="card bg-warning text-white">
-          <div class="card-body">
-            <h5 class="card-title">Customer Deposits</h5>
-
-            <p class="card-text">
-              Track deposits made by customers
-            </p>
-
-            <a href="{% url 'deposit_list' %}"
-               class="btn btn-light btn-sm">
-              View Deposits
-            </a>
-
-            <a href="{% url 'add_deposit' %}"
-               class="btn btn-dark btn-sm">
-              Add Deposit
-            </a>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Outstanding Credit -->
-      <div class="col-md-3 text-center">
-
-        <div class="card bg-warning text-white">
-          <div class="card-body">
-            <i class="fas fa-handshake"></i>
-            <h5>Outstanding Credit</h5>
-            <p>UGX {{ outstanding_credit|intcomma }}</p>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Deposits Received + Unpaid Sales stacked -->
-      <div class="col-md-3 text-center">
-
-        <div class="card bg-success text-white">
-          <div class="card-body">
-            <i class="fas fa-money-bill-wave"></i>
-            <h5>Deposits Received</h5>
-            <p>UGX {{ total_deposits|intcomma }}</p>
-          </div>
-        </div>
-
-        <div class="card bg-danger text-white">
-          <div class="card-body">
-            <i class="fas fa-exclamation-circle"></i>
-            <h5>Unpaid Sales</h5>
-            <p>{{ unpaid_sales|intcomma }}</p>
-          </div>
-        </div>
-
-      </div>
-
     </div>
+
+    <!-- Outstanding Credit -->
+    <div class="col-md-3">
+        <div class="card bg-warning text-white text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-handshake"></i>
+                <h5>Outstanding Credit</h5>
+                <p>UGX {{ outstanding_credit|intcomma }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deposits Received -->
+    <div class="col-md-3">
+        <div class="card bg-success text-white text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-money-bill-wave"></i>
+                <h5>Deposits Received</h5>
+                <p>UGX {{ total_deposits|intcomma }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unpaid Sales -->
+    <div class="col-md-3">
+        <div class="card bg-danger text-white text-center h-100">
+            <div class="card-body">
+                <i class="fas fa-exclamation-circle"></i>
+                <h5>Unpaid Sales</h5>
+                <p>{{ unpaid_sales|intcomma }}</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row justify-content-center mt-3">
+
+    <div class="col-md-4">
+        <div class="card bg-warning text-white text-center">
+            <div class="card-body">
+
+                <h5 class="card-title">Customer Deposits</h5>
+
+                <p class="card-text">
+                    Track deposits made by customers
+                </p>
+
+                <a href="{% url 'deposit_list' %}"
+                   class="btn btn-light btn-sm">
+                    View Deposits
+                </a>
+
+                <a href="{% url 'add_deposit' %}"
+                   class="btn btn-dark btn-sm">
+                    Add Deposit
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
 
   </div>
 
@@ -228,6 +237,7 @@
     </tbody>
 
   </table>
+  </div>
 
 </div>
 

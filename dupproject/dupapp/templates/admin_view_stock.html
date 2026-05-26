@@ -1,0 +1,89 @@
+{% extends "base_admin.html" %}
+{% block content %}
+
+<style>
+  .stock-container {
+    background: #fff;
+    border-radius: 12px;
+    margin: 40px auto;
+    max-width: 700px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    overflow: hidden;
+  }
+
+  .stock-header {
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    padding: 15px;
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+
+  .stock-body {
+    padding: 25px;
+  }
+
+  .stock-body .row {
+    margin-bottom: 15px;
+  }
+
+  .label {
+    font-weight: 600;
+    color: #212529;
+  }
+
+  .value {
+    color: #555;
+  }
+</style>
+
+<div class="stock-container">
+  <div class="stock-header">
+    Stock Details
+  </div>
+  <div class="stock-body">
+    <div class="row">
+      <div class="col-md-6 label">Item Name:</div>
+      <div class="col-md-6 value">{{ stock.item_name }}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 label">Specification:</div>
+      <div class="col-md-6 value">{{ stock.specification }}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 label">Quantity:</div>
+      <div class="col-md-6 value">{{ stock.quantity }}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 label">Unit Cost:</div>
+      <div class="col-md-6 value">{{ stock.unit_cost }}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 label">Selling Price:</div>
+      <div class="col-md-6 value">{{ stock.selling_price }}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 label">Supplier:</div>
+      <div class="col-md-6 value">{{ stock.supplier.name }} - {{ stock.supplier.address }}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 label">Payment Method:</div>
+      <div class="col-md-6 value">{{ stock.payment_method }}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 label">Amount Paid:</div>
+      <div class="col-md-6 value">{{ stock.amount_paid }}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 label">Balance:</div>
+      <div class="col-md-6 value">{{ stock.balance }}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 label">Date Received:</div>
+      <div class="col-md-6 value">{{ stock.date_received|date:"Y-m-d H:i" }}</div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

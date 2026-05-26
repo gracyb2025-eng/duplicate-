@@ -5,7 +5,7 @@ from .models import Sale, Payment,Stock,SupplierPayment, Supplier, Deposit
 from .forms import SaleForm, StockForm  # assuming you have a ModelForm
 from django.core.exceptions import ValidationError
 import datetime
-
+from decimal import Decimal
 
 
 # Create your views here.
@@ -192,21 +192,7 @@ def add_stock(request):
 
    
 
-def edit_stock(request, stock_id):
-    stock = get_object_or_404(Stock, id=stock_id)
-    suppliers = Supplier.objects.all()
-    if request.method == "POST":
-        stock.item_name = request.POST["item_name"]
-        stock.specification = request.POST.get("specification")
-        stock.quantity = request.POST["quantity"]
-        stock.unit_cost = request.POST["unit_cost"]
-        stock.selling_price = request.POST["selling_price"]
-        stock.supplier = get_object_or_404(Supplier, id=request.POST["supplier"])
-        stock.payment_method = request.POST["payment_method"]
-        stock.amount_paid = request.POST.get("amount_paid", 0)
-        stock.save()
-        return redirect("stock_dashboard")
-    return render(request, "edit_stock.html", {"stock": stock, "suppliers": suppliers})
+
 
 def view_stock(request, stock_id):
     stock = get_object_or_404(Stock, id=stock_id)
@@ -254,7 +240,7 @@ def add_supplier_payment(request, stock_id):
             stock=stock,
             amount=request.POST["amount"]
         )
-        stock.amount_paid += float(request.POST["amount"])
+        stock.amount_paid += Decimal(request.POST["amount"])
         stock.save()
         return redirect("stock_dashboard")
     return render(request, "supplier_payment_form.html", {"stock": stock})
@@ -375,7 +361,7 @@ def edit_stock(request, stock_id):
         form = StockForm(request.POST, instance=stock)
         if form.is_valid():
             form.save()
-            return redirect("stock_table")  # back to dashboard
+            return redirect("stock_dashboard")  # back to dashboard
     else:
         form = StockForm(instance=stock)  # pre-fill with current values
 
@@ -537,3 +523,69 @@ def admin_stock_reports(request):
         "supplier_credit": supplier_credit,
         "low_stock": low_stock,
     })
+
+def admin_edit_stock(request, stock_id):
+
+    stock = get_object_or_404(Stock, id=stock_id)
+
+    if request.method == "POST":
+
+        form = StockForm(request.POST, instance=stock)
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect("admin_stock_dashboard")
+
+    else:
+
+        form = StockForm(instance=stock)
+
+    return render(
+        request,
+        "admin_edit_stock.html",
+        {
+            "form": form,
+            "stock": stock
+        }
+    )
+
+def admin_view_stock(request, stock_id):
+
+    stock = get_object_or_404(Stock, id=stock_id)
+
+    return render(
+        request,
+        "admin_view_stock.html",
+        {
+            "stock": stock
+        }
+    )
+
+def admin_add_supplier_payment(request, stock_id):
+
+    stock = get_object_or_404(Stock, id=stock_id)
+
+    if request.method == "POST":
+
+        amount = Decimal(request.POST["amount"])
+
+        SupplierPayment.objects.create(
+            supplier=stock.supplier,
+            stock=stock,
+            amount=amount
+        )
+
+        stock.amount_paid += amount
+        stock.save()
+
+        return redirect("admin_stock_dashboard")
+
+    return render(
+        request,
+        "admin_supplier_payment.html",
+        {
+            "stock": stock
+        }
+    )
