@@ -15,6 +15,6 @@ class RegisterForm(forms.ModelForm):
 
         fields = [
             'username',
-            'email',
+            
             'password'
         ]

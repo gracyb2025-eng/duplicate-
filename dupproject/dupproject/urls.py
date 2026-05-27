@@ -15,8 +15,6 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.contrib.auth import views as auth_views
-from django.urls import path
 from dupapp import views
 from django.urls import path, include
 
@@ -66,6 +64,5 @@ urlpatterns = [
     path("deposits/<int:deposit_id>/receipt/", views.view_deposit_receipt, name="view_deposit_receipt"),
     path("deposits/<str:customer_name>/<str:item_name>/history/", views.deposit_history, name="deposit_history"),
 
-    #  LOGIN 
-    path("login/",auth_views.LoginView.as_view(template_name="login.html"),name="login"),
+    
 ]
