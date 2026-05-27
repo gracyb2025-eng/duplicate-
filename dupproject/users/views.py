@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+
 from .forms import RegisterForm
 from .models import UserProfile
 
@@ -16,7 +17,6 @@ def register_user(request):
 
             user = User.objects.create_user(
                 username=form.cleaned_data['username'],
-            
                 password=form.cleaned_data['password']
             )
 
@@ -37,6 +37,7 @@ def register_user(request):
         'registration/register.html',
         {'form': form}
     )
+
 
 def login_user(request):
 
@@ -70,6 +71,7 @@ def login_user(request):
             messages.error(request, "Invalid username or password")
 
     return render(request, 'registration/login.html')
+
 
 def logout_user(request):
 
