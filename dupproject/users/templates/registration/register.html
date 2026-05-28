@@ -27,22 +27,16 @@
         .register-wrapper{
             width:850px;
             height:500px;
-
             display:flex;
-
             border-radius:15px;
             overflow:hidden;
-
             box-shadow:0 8px 25px rgba(0,0,0,0.5);
-
             background:rgba(255,255,255,0.95);
         }
 
         .left-side{
             flex:1;
-
             background:#111;
-
             display:flex;
             justify-content:center;
             align-items:center;
@@ -54,9 +48,7 @@
 
         .right-side{
             flex:1;
-
             padding:40px;
-
             display:flex;
             flex-direction:column;
             justify-content:center;
@@ -82,26 +74,19 @@
         .form-group select{
             width:100%;
             padding:12px;
-
             border:1px solid #ccc;
             border-radius:6px;
-
             font-size:16px;
         }
 
         .register-btn{
             width:100%;
-
             padding:12px;
-
             background:#2B5DB0;
             color:white;
-
             border:none;
             border-radius:6px;
-
             cursor:pointer;
-
             font-size:17px;
             font-weight:bold;
         }
@@ -113,33 +98,25 @@
         .success-message{
             background:green;
             color:white;
-
             padding:10px;
             margin-bottom:20px;
-
             border-radius:6px;
             text-align:center;
         }
 
     </style>
-
 </head>
 <body>
 
 <div class="register-wrapper">
 
     <!-- LEFT SIDE -->
-
     <div class="left-side">
-
         <img src="{% static 'images/logo.png' %}" alt="Logo">
-
     </div>
 
     <!-- RIGHT SIDE -->
-
     <div class="right-side">
-
         <h2>Register User</h2>
 
         {% if messages %}
@@ -151,44 +128,25 @@
         {% endif %}
 
         <form method="POST">
-
             {% csrf_token %}
-
             <div class="form-group">
-
                 <label>Username</label>
-
                 {{ form.username }}
-
             </div>
 
             <div class="form-group">
-
                 <label>Password</label>
-
                 {{ form.password }}
-
             </div>
 
             <div class="form-group">
-
                 <label>Role</label>
-
                 {{ form.role }}
-
             </div>
 
-            <button type="submit" class="register-btn">
-
-                Register User
-
-            </button>
-
+            <button type="submit" class="register-btn">Register User</button>
         </form>
-
     </div>
-
 </div>
-
 </body>
 </html>

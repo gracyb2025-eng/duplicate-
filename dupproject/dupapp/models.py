@@ -5,7 +5,6 @@ import re
 
 # Create your models here.
 class Sale(models.Model):
-
     distance_km = models.IntegerField(default=0)
     transport_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
@@ -60,15 +59,12 @@ class Sale(models.Model):
 
     # VALIDATIONS
     def clean(self):
-
         # Quantity validation
         if self.quantity <= 0:
             raise ValidationError("Quantity must be greater than zero.")
-
         # Unit price validation
         if self.unit_price <= 0:
             raise ValidationError("Unit price must be positive.")
-
         # Total price validation
         if self.total_price <= 0:
             raise ValidationError("Total price must be positive.")
@@ -95,7 +91,6 @@ class Sale(models.Model):
     def status(self):
         if self.payment_method in ['Cash', 'Mobile']:
             return 'Paid'
-
         return 'Paid' if self.balance() == 0 else 'Unpaid'
 
     def __str__(self):
@@ -103,7 +98,6 @@ class Sale(models.Model):
 
 
 class Payment(models.Model):
-
     sale = models.ForeignKey(Sale,related_name="payments",on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10,decimal_places=2 )
     date = models.DateTimeField(auto_now_add=True)
@@ -113,18 +107,14 @@ class Payment(models.Model):
 
 
 class Supplier(models.Model):
-
     name = models.CharField(max_length=100, unique=True)
     email = models.EmailField(unique=True)
     contact = models.CharField(max_length=20,blank=True,null=True)
     address = models.CharField(max_length=200,blank=True,null=True)
-
     def __str__(self):
         return self.name
 
-
 class Stock(models.Model):
-
     item_name = models.CharField(max_length=50)
     specification = models.CharField(max_length=100,blank=True)
     quantity = models.IntegerField()
@@ -137,19 +127,14 @@ class Stock(models.Model):
             ('Credit', 'Credit')
         ]
     )
-
     amount_paid = models.DecimalField(max_digits=10,decimal_places=2,default=0)
-
-    # VALIDATIONS
    
+   #validations
     def clean(self):
-
         if self.quantity is not None and self.quantity <= 0:
             raise ValidationError("Quantity must be greater than zero.")
-
         if self.unit_cost is not None and self.unit_cost <= 0:
             raise ValidationError("Unit cost must be positive.")
-
         if (
         self.selling_price is not None and
         self.unit_cost is not None and
@@ -178,15 +163,11 @@ class SupplierPayment(models.Model):
     date = models.DateTimeField(auto_now_add=True)     
 
 
-
-    
-
 class Deposit(models.Model):
     PAYMENT_METHODS = [
         ("Cash", "Cash"),
         ("Mobile Money", "Mobile Money"),
     ]
-
     customer_name = models.CharField(max_length=100)
     item_name = models.CharField(max_length=100)
     total_cost = models.DecimalField(max_digits=10, decimal_places=2)  # cost of item
@@ -194,7 +175,6 @@ class Deposit(models.Model):
     payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS)
     receipt_number = models.CharField(max_length=20, unique=True)
     date = models.DateTimeField(auto_now_add=True)
-
     def __str__(self):
         return f"{self.customer_name} - {self.item_name}"
 

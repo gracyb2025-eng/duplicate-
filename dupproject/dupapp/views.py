@@ -33,55 +33,31 @@ def sales_dashboard(request):
     return render(request, 'sales_dashboard.html', context)
 
 def save_sale(request):
-
     if request.method == 'POST':
-
         try:
-            total_price = float(
-                request.POST['total_price']
-            )
-
-            distance_km = int(
-                request.POST.get('distance_km', 0)
-            )
-
-            quantity_sold = int(
-                request.POST['quantity']
-            )
-
+            total_price = float(request.POST['total_price'])
+            distance_km = int(request.POST.get('distance_km', 0))
+            quantity_sold = int(request.POST['quantity'])
             item_name = request.POST['item_name']
             specification = request.POST['specification']
 
-            # FIND STOCK ITEM
-            stock = Stock.objects.filter(
-                item_name=item_name,
-                specification=specification
-            ).first()
+            # find stock item
+            stock = Stock.objects.filter(item_name=item_name,specification=specification).first()
 
-            # CHECK IF ITEM EXISTS
+            # check if item exists
             if not stock:
-                return render(request, 'sales_form.html', {
-                    'errors': [
-                        'Item does not exist in stock.'
-                    ]
-                })
+                return render(request, 'sales_form.html', {'errors': ['Item does not exist in stock.']})
 
-            # CHECK AVAILABLE QUANTITY
+            # check available quantity
             if stock.quantity < quantity_sold:
-                return render(request, 'sales_form.html', {
-                    'errors': [
-                        f'Only {stock.quantity} items left in stock.'
-                    ]
-                })
+                return render(request, 'sales_form.html', {'errors': [f'Only {stock.quantity} items left in stock.']})
 
-            # TRANSPORT LOGIC
+            # transport logic
             if total_price >= 500000 and distance_km <= 10:
                 transport_cost = 0
             else:
                 transport_cost = 30000
-
             sale = Sale(
-
                 item_name=item_name,
                 specification=specification,
                 quantity=quantity_sold,
@@ -96,26 +72,19 @@ def save_sale(request):
                 transport_cost=transport_cost,
             )
 
-            # VALIDATE
+            # validate
             sale.full_clean()
-
-            # SAVE SALE
+            # save sale
             sale.save()
 
-            # REDUCE STOCK
+            # reduce stock
             stock.quantity -= quantity_sold
             stock.save()
-
             return redirect('sales_dashboard')
 
         except ValidationError as e:
-
-            return render(request, 'sales_form.html', {
-                'errors': e.messages
-            })
-
+            return render(request, 'sales_form.html', {'errors': e.messages})
     return render(request, 'sales_form.html')
-
 
 
 def view_receipt(request, sale_id):
@@ -125,16 +94,12 @@ def view_receipt(request, sale_id):
 def add_payment(request,sale_id):
     sale = get_object_or_404(Sale, id=sale_id)
     if request.method == 'POST':
-        Payment.objects.create(
-            sale=sale,
-            amount=request.POST['amount']
-        )
+        Payment.objects.create(sale=sale,amount=request.POST['amount'])
         return redirect('sales_dashboard')
     return render(request, 'credit_payment.html', {'sale': sale})
 
 def edit_sale(request, sale_id):
     sale = get_object_or_404(Sale, id=sale_id)
-
     if request.method == "POST":
         form = SaleForm(request.POST, instance=sale)
         if form.is_valid():
@@ -142,7 +107,6 @@ def edit_sale(request, sale_id):
             return redirect("sales_dashboard")
     else:
         form = SaleForm(instance=sale)  # pre-fill with current values
-
     return render(request, "edit_sale.html", {"form": form, "sale": sale})
 
 
@@ -150,10 +114,7 @@ def edit_sale(request, sale_id):
 def reports(request):
     daily_sales = Sale.objects.values('date__date').annotate(total=Sum('total_price'))
     payment_methods = Sale.objects.values('payment_method').annotate(total=Sum('total_price'))
-    return render(request, "reports.html", {
-        "daily_sales": daily_sales,
-        "payment_methods": payment_methods,
-    })
+    return render(request, "reports.html", {"daily_sales": daily_sales,"payment_methods": payment_methods,})
 
 def stock_dashboard(request):
     stocks = Stock.objects.all()
@@ -168,36 +129,20 @@ def stock_dashboard(request):
     })
 
 def add_stock(request):
-
     if request.method == "POST":
-
         form = StockForm(request.POST)
-
         if form.is_valid():
-
             form.save()
-
             messages.success(request, "Stock added successfully.")
-
             return redirect("stock_dashboard")
-
     else:
-
         form = StockForm()
-
-        return render(request, "stock_form.html", {
-    "form": form,
-    "suppliers": Supplier.objects.all()
-})
-
-   
-
+        return render(request, "stock_form.html", {"form": form,"suppliers": Supplier.objects.all()})
 
 
 def view_stock(request, stock_id):
     stock = get_object_or_404(Stock, id=stock_id)
     return render(request, "view_stock.html", {"stock": stock})
-
 
 
 def supplier_list(request):
@@ -263,8 +208,6 @@ def stock_reports(request):
 
 
 
-
-
 def admin_dashboard(request):
     stocks = Stock.objects.all()
     suppliers = Supplier.objects.all()
@@ -312,10 +255,8 @@ def add_deposit(request):
         if payment_method not in ["Cash", "Mobile Money"]:
             messages.error(request, "Deposits can only be made via Cash or Mobile Money.")
             return redirect("add_deposit")
-
         # Generate a simple receipt number
         receipt_number = f"DPT{Deposit.objects.count() + 1:04d}"
-
         Deposit.objects.create(
             customer_name=customer_name,
             item_name=item_name,
@@ -326,7 +267,6 @@ def add_deposit(request):
         )
         messages.success(request, "Deposit recorded successfully.")
         return redirect("deposit_list")
-
     return render(request, "deposit_form.html")
 
 # View a temporary receipt for a deposit
@@ -340,7 +280,6 @@ def deposit_history(request, customer_name, item_name):
     total_paid = sum(d.amount for d in deposits)
     total_cost = deposits.first().total_cost if deposits.exists() else 0
     balance = total_cost - total_paid
-
     return render(request, "deposit_history.html", {
         "customer_name": customer_name,
         "item_name": item_name,
@@ -356,7 +295,6 @@ def deposit_history(request, customer_name, item_name):
 
 def edit_stock(request, stock_id):
     stock = get_object_or_404(Stock, id=stock_id)
-
     if request.method == "POST":
         form = StockForm(request.POST, instance=stock)
         if form.is_valid():
@@ -364,7 +302,6 @@ def edit_stock(request, stock_id):
             return redirect("stock_dashboard")  # back to dashboard
     else:
         form = StockForm(instance=stock)  # pre-fill with current values
-
     return render(request, "edit_stock.html", {"form": form, "stock": stock})
 
 def landing_page(request):
@@ -373,28 +310,11 @@ def landing_page(request):
 
 
 def admin_sales_dashboard(request):
-
     sales = Sale.objects.all().order_by("-date")
-
-    total_sales = Sale.objects.aggregate(
-        Sum('total_price')
-    )['total_price__sum'] or 0
-
-    total_deposits = Payment.objects.aggregate(
-        Sum('amount')
-    )['amount__sum'] or 0
-
-    outstanding_credit = sum(
-        sale.balance()
-        for sale in Sale.objects.filter(
-            payment_method='Credit'
-        )
-    )
-
-    paid_sales = Sale.objects.filter(
-        payment_method__in=['Cash', 'Mobile']
-    ).count()
-
+    total_sales = Sale.objects.aggregate(Sum('total_price'))['total_price__sum'] or 0
+    total_deposits = Payment.objects.aggregate(Sum('amount'))['amount__sum'] or 0
+    outstanding_credit = sum(sale.balance()for sale in Sale.objects.filter(payment_method='Credit'))
+    paid_sales = Sale.objects.filter(payment_method__in=['Cash', 'Mobile']).count()
     unpaid_sales = sum(
         1
         for sale in Sale.objects.filter(
@@ -412,24 +332,15 @@ def admin_sales_dashboard(request):
         'unpaid_sales': unpaid_sales,
     }
 
-    return render(
-        request,
-        'admin_sales_dashboard.html',
-        context
-    )
-
+    return render(request,'admin_sales_dashboard.html',context)
 
 
 def admin_stock_dashboard(request):
-
     stocks = Stock.objects.all()
-
     total_value = sum(
         [s.stock_value() for s in stocks]
     ) if stocks else 0
-
     low_stock = stocks.filter(quantity__lt=10)
-
     supplier_credit = Stock.objects.filter(
         payment_method='Credit'
     )
@@ -441,11 +352,7 @@ def admin_stock_dashboard(request):
         'supplier_credit': supplier_credit,
     }
 
-    return render(
-        request,
-        'admin_stock_dashboard.html',
-        context
-    )
+    return render(request,'admin_stock_dashboard.html',context)
 
 
 def admin_sales_dashboard(request):
@@ -467,7 +374,6 @@ def admin_sales_dashboard(request):
         'outstanding_credit': outstanding_credit,
         'unpaid_sales': unpaid_sales,
     }
-
     return render(request, "admin_sales_dashboard.html", context)
 
 
@@ -475,13 +381,11 @@ def admin_stock_dashboard(request):
     stocks = Stock.objects.all()
     total_value = sum([s.stock_value() for s in stocks]) if stocks else 0
     low_stock = stocks.filter(quantity__lt=10)
-
     context = {
         'stocks': stocks,
         'total_value': total_value,
         'low_stock': low_stock,
     }
-
     return render(request, "admin_stock_dashboard.html", context)
 
 
@@ -490,7 +394,6 @@ def admin_reports(request):
     daily_sales = Sale.objects.values(
         'date__date'
     ).annotate(total=Sum('total_price'))
-
     payment_methods = Sale.objects.values(
         'payment_method'
     ).annotate(total=Sum('total_price'))
@@ -506,9 +409,7 @@ def admin_stock_reports(request):
     inflow = Stock.objects.values(
         'date_received__date'
     ).annotate(total=Sum('quantity'))
-
     current_stock = Stock.objects.all()
-
     supplier_credit = Stock.objects.filter(
         payment_method="Credit"
     )
@@ -525,26 +426,15 @@ def admin_stock_reports(request):
     })
 
 def admin_edit_stock(request, stock_id):
-
     stock = get_object_or_404(Stock, id=stock_id)
-
     if request.method == "POST":
-
         form = StockForm(request.POST, instance=stock)
-
         if form.is_valid():
-
             form.save()
-
             return redirect("admin_stock_dashboard")
-
     else:
-
         form = StockForm(instance=stock)
-
-    return render(
-        request,
-        "admin_edit_stock.html",
+    return render(request,"admin_edit_stock.html",
         {
             "form": form,
             "stock": stock
@@ -552,40 +442,19 @@ def admin_edit_stock(request, stock_id):
     )
 
 def admin_view_stock(request, stock_id):
-
     stock = get_object_or_404(Stock, id=stock_id)
-
-    return render(
-        request,
-        "admin_view_stock.html",
-        {
-            "stock": stock
-        }
-    )
+    return render(request,"admin_view_stock.html",{"stock": stock})
 
 def admin_add_supplier_payment(request, stock_id):
-
     stock = get_object_or_404(Stock, id=stock_id)
-
     if request.method == "POST":
-
         amount = Decimal(request.POST["amount"])
-
         SupplierPayment.objects.create(
             supplier=stock.supplier,
             stock=stock,
             amount=amount
         )
-
         stock.amount_paid += amount
         stock.save()
-
         return redirect("admin_stock_dashboard")
-
-    return render(
-        request,
-        "admin_supplier_payment.html",
-        {
-            "stock": stock
-        }
-    )
+    return render(request,"admin_supplier_payment.html",{"stock": stock})
