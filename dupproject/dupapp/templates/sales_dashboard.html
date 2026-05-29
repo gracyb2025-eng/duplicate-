@@ -15,12 +15,18 @@
     max-width: 1100px;
   }
 
+  .fas{
+    color: burlywood;
+  }
+
   /* Card styling */
   .cards .card {
     border-radius: 10px;
     box-shadow: 0 3px 10px rgba(0,0,0,0.12);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    margin-bottom: 12px; /* reduced */
+    margin-bottom: 12px;
+    border-left-color: crimson;
+    border-left-width: 6px;
   }
 
   .cards .card:hover {
@@ -82,7 +88,7 @@
 
     <!-- Total Sales -->
     <div class="col-md-3">
-        <div class="card bg-primary text-white text-center h-100">
+        <div class="card text-dark text-center h-100">
             <div class="card-body">
                 <i class="fas fa-shopping-cart"></i>
                 <h5>Total Sales</h5>
@@ -93,7 +99,7 @@
 
     <!-- Outstanding Credit -->
     <div class="col-md-3">
-        <div class="card bg-warning text-white text-center h-100">
+        <div class="card text-dark text-center h-100">
             <div class="card-body">
                 <i class="fas fa-handshake"></i>
                 <h5>Outstanding Credit</h5>
@@ -104,7 +110,7 @@
 
     <!-- Deposits Received -->
     <div class="col-md-3">
-        <div class="card bg-success text-white text-center h-100">
+        <div class="card  text-dark text-center h-100">
             <div class="card-body">
                 <i class="fas fa-money-bill-wave"></i>
                 <h5>Deposits Received</h5>
@@ -115,7 +121,7 @@
 
     <!-- Unpaid Sales -->
     <div class="col-md-3">
-        <div class="card bg-danger text-white text-center h-100">
+        <div class="card  text-dark text-center h-100">
             <div class="card-body">
                 <i class="fas fa-exclamation-circle"></i>
                 <h5>Unpaid Sales</h5>
@@ -129,24 +135,16 @@
 <div class="row justify-content-center mt-3">
 
     <div class="col-md-4">
-        <div class="card bg-warning text-white text-center">
+        <div class="card text-dark text-center">
             <div class="card-body">
 
                 <h5 class="card-title">Customer Deposits</h5>
 
-                <p class="card-text">
-                    Track deposits made by customers
-                </p>
+                <p class="card-text">Track deposits made by customers</p>
 
-                <a href="{% url 'deposit_list' %}"
-                   class="btn btn-light btn-sm">
-                    View Deposits
-                </a>
+                <a href="{% url 'deposit_list' %}"class="btn btn-light btn-sm">View Deposits</a>
 
-                <a href="{% url 'add_deposit' %}"
-                   class="btn btn-dark btn-sm">
-                    Add Deposit
-                </a>
+                <a href="{% url 'add_deposit' %}"class="btn btn-dark btn-sm">Add Deposit</a>
 
             </div>
         </div>
@@ -177,7 +175,7 @@
     <thead>
       <tr>
         <th>Receipt No</th>
-        <th>Item</th>
+        <th>Item Name</th>
         <th>Total Price</th>
         <th>Amount Paid</th>
         <th>Balance</th>

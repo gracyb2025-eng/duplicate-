@@ -2,11 +2,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Sum,F
 from django.contrib import messages
 from .models import Sale, Payment,Stock,SupplierPayment, Supplier, Deposit
-from .forms import SaleForm, StockForm  # assuming you have a ModelForm
+from .forms import SaleForm, StockForm, SupplierForm, DepositForm, PaymentForm
 from django.core.exceptions import ValidationError
 import datetime
 from decimal import Decimal
-
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def generate_receipt_number():
@@ -32,37 +32,44 @@ def sales_dashboard(request):
     }
     return render(request, 'sales_dashboard.html', context)
 
+from decimal import Decimal
+
 def save_sale(request):
     if request.method == 'POST':
         try:
-            total_price = float(request.POST['total_price'])
             distance_km = int(request.POST.get('distance_km', 0))
             quantity_sold = int(request.POST['quantity'])
+            unit_price = Decimal(request.POST['unit_price'])
+            # auto calculate totalprice
+            total_price = quantity_sold * unit_price
             item_name = request.POST['item_name']
             specification = request.POST['specification']
-
             # find stock item
-            stock = Stock.objects.filter(item_name=item_name,specification=specification).first()
+            stock = Stock.objects.filter(
+                item_name=item_name,
+                specification=specification
+            ).first()
 
             # check if item exists
             if not stock:
-                return render(request, 'sales_form.html', {'errors': ['Item does not exist in stock.']})
+                return render(request,'sales_form.html',{'errors': ['Item does not exist in stock.']})
 
             # check available quantity
             if stock.quantity < quantity_sold:
-                return render(request, 'sales_form.html', {'errors': [f'Only {stock.quantity} items left in stock.']})
+                return render(request,'sales_form.html',{'errors': [f'Only {stock.quantity} items left in stock.']})
 
             # transport logic
             if total_price >= 500000 and distance_km <= 10:
                 transport_cost = 0
             else:
                 transport_cost = 30000
+
             sale = Sale(
                 item_name=item_name,
                 specification=specification,
                 quantity=quantity_sold,
-                unit_price=request.POST['unit_price'],
-                total_price=request.POST['total_price'],
+                unit_price=unit_price,
+                total_price=total_price,
                 payment_method=request.POST['payment_method'],
                 customer_name=request.POST['customer_name'],
                 contact=request.POST['contact'],
@@ -76,14 +83,12 @@ def save_sale(request):
             sale.full_clean()
             # save sale
             sale.save()
-
             # reduce stock
             stock.quantity -= quantity_sold
             stock.save()
             return redirect('sales_dashboard')
-
         except ValidationError as e:
-            return render(request, 'sales_form.html', {'errors': e.messages})
+            return render(request,'sales_form.html',{'errors': e.messages})
     return render(request, 'sales_form.html')
 
 
@@ -91,12 +96,18 @@ def view_receipt(request, sale_id):
     sale = get_object_or_404(Sale, id=sale_id)
     return render(request, 'receipt.html', {'sale': sale})
 
-def add_payment(request,sale_id):
+def add_payment(request, sale_id):
     sale = get_object_or_404(Sale, id=sale_id)
-    if request.method == 'POST':
-        Payment.objects.create(sale=sale,amount=request.POST['amount'])
-        return redirect('sales_dashboard')
-    return render(request, 'credit_payment.html', {'sale': sale})
+    if request.method == "POST":
+        form = PaymentForm(request.POST)
+        if form.is_valid():
+            payment = form.save(commit=False)
+            payment.sale = sale
+            payment.save()
+            return redirect("sales_dashboard")
+    else:
+        form = PaymentForm()
+    return render(request,"credit_payment.html",{"sale": sale,"form": form})
 
 def edit_sale(request, sale_id):
     sale = get_object_or_404(Sale, id=sale_id)
@@ -151,14 +162,14 @@ def supplier_list(request):
 
 def add_supplier(request):
     if request.method == "POST":
-        Supplier.objects.create(
-            name=request.POST["name"],
-            email=request.POST["email"],
-            contact=request.POST["contact"],
-            address=request.POST["address"]
-        )
-        return redirect("add_stock")  # redirect back to stock form
-    return render(request, "supplier_form.html")
+        form = SupplierForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Supplier added successfully.")
+            return redirect("add_stock")
+    else:
+        form = SupplierForm()
+    return render(request,"supplier_form.html",{"form": form})
 
 def edit_supplier(request, supplier_id):
     supplier = get_object_or_404(Supplier, id=supplier_id)
@@ -207,7 +218,7 @@ def stock_reports(request):
     })
 
 
-
+@login_required
 def admin_dashboard(request):
     stocks = Stock.objects.all()
     suppliers = Supplier.objects.all()
@@ -236,8 +247,6 @@ def supplier_list(request):
     return render(request, "supplier_list.html", {"suppliers": suppliers})
 
 
-
-
 # Show all deposits
 def deposit_list(request):
     deposits = Deposit.objects.all().order_by("-date")
@@ -246,28 +255,16 @@ def deposit_list(request):
 # Add a new deposit
 def add_deposit(request):
     if request.method == "POST":
-        customer_name = request.POST.get("customer_name")
-        item_name = request.POST.get("item_name")
-        total_cost = request.POST.get("total_cost")
-        amount = request.POST.get("amount")
-        payment_method = request.POST.get("payment_method")
-
-        if payment_method not in ["Cash", "Mobile Money"]:
-            messages.error(request, "Deposits can only be made via Cash or Mobile Money.")
-            return redirect("add_deposit")
-        # Generate a simple receipt number
-        receipt_number = f"DPT{Deposit.objects.count() + 1:04d}"
-        Deposit.objects.create(
-            customer_name=customer_name,
-            item_name=item_name,
-            total_cost=total_cost,
-            amount=amount,
-            payment_method=payment_method,
-            receipt_number=receipt_number,
-        )
-        messages.success(request, "Deposit recorded successfully.")
-        return redirect("deposit_list")
-    return render(request, "deposit_form.html")
+        form = DepositForm(request.POST)
+        if form.is_valid():
+            deposit = form.save(commit=False)
+            deposit.receipt_number = (f"DPT{Deposit.objects.count() + 1:04d}")
+            deposit.save()
+            messages.success(request,"Deposit recorded successfully.")
+            return redirect("deposit_list")
+    else:
+        form = DepositForm()
+    return render(request,"deposit_form.html",{"form": form})
 
 # View a temporary receipt for a deposit
 def view_deposit_receipt(request, deposit_id):

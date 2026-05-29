@@ -1,36 +1,85 @@
 {% extends "base_admin.html" %}
 {% block content %}
+<style>
+  h4{
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .card{
+    border-left-color: crimson;
+    border-left-width: 4px;
+    height: 100px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+
+  .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  }
+
+  .fas{
+    color: burlywood;
+    font-size: larger;
+  }
+
+  .container{
+    border-radius: 10px;
+    
+  }
+
+  th{
+    background-color: black;
+    color: white;
+  }
+
+</style>
 <h2>Stock Reports</h2>
 
 <div class="row mb-3">
   <div class="col-md-3">
-    <div class="card bg-success text-white">
-      <div class="card-body">Total Items: {{ current_stock.count }}</div>
+    <div class="card text-dark">
+      <i class="fas fa-boxes"></i>
+      <div class="card-body" style="font-weight: bold;">Total Items: {{ current_stock.count }}</div>
     </div>
   </div>
   <div class="col-md-3">
-    <div class="card bg-warning text-dark">
-      <div class="card-body">Low Stock: {{ low_stock.count }}</div>
+    <div class="card text-dark">
+      <i class="fas fa-exclamation-triangle "></i>
+      <div class="card-body" style="font-weight: bold;">Low Stock: {{ low_stock.count }}</div>
     </div>
   </div>
   <div class="col-md-3">
-    <div class="card bg-danger text-white">
-      <div class="card-body">Suppliers on Credit: {{ supplier_credit.count }}</div>
+    <div class="card text-dark">
+      <i class="fas fa-handshake"></i>
+      <div class="card-body" style="font-weight: bold;">Suppliers on Credit: {{ supplier_credit.count }}</div>
     </div>
   </div>
 </div>
 
 <h4> Stock Inflow</h4>
+<div class="container">
 <table class="table table-bordered">
-  <tr><th>Date</th><th>Total Units Received</th></tr>
+  <tr>
+    <th>Date</th>
+    <th>Total Units Received</th>
+  </tr>
   {% for entry in inflow %}
     <tr><td>{{ entry.date_received__date }}</td><td>{{ entry.total }}</td></tr>
   {% endfor %}
 </table>
+</div>
 
 <h4> Current Stock Levels</h4>
+<div class="container">
 <table class="table table-striped">
-  <tr><th>Item</th><th>Spec</th><th>Qty</th><th>Supplier</th></tr>
+  <tr> 
+    <th>Item Name</th>
+    <th>Specification(for item)</th>
+    <th>Quantity(for item)</th>
+    <th>Supplier(for item)</th>
+  </tr>
   {% for stock in current_stock %}
     <tr {% if stock.quantity < 10 %} class="table-danger" {% endif %}>
       <td>{{ stock.item_name }}</td>
@@ -40,8 +89,10 @@
     </tr>
   {% endfor %}
 </table>
+</div>
 
 <h4> Supplier Credit Balances</h4>
+<div class="container">
 <table class="table table-bordered">
   <tr><th>Supplier</th><th>Item</th><th>Total Cost</th><th>Amount Paid</th><th>Balance</th></tr>
   {% for stock in supplier_credit %}
@@ -54,4 +105,5 @@
     </tr>
   {% endfor %}
 </table>
+</div>
 {% endblock %}

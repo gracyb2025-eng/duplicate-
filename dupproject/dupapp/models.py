@@ -83,15 +83,19 @@ class Sale(models.Model):
 
        
     def amount_paid(self):
+    # Cash and Mobile are fully paid instantly
+        if self.payment_method in ['Cash', 'Mobile']:
+            return self.total_price
+    # Credit payments come from Payment table
         return sum(payment.amount for payment in self.payments.all())
 
     def balance(self):
         return self.total_price - self.amount_paid()
 
     def status(self):
-        if self.payment_method in ['Cash', 'Mobile']:
+        if self.balance() == 0:
             return 'Paid'
-        return 'Paid' if self.balance() == 0 else 'Unpaid'
+        return 'Unpaid'
 
     def __str__(self):
         return f"{self.receipt_number} - {self.customer_name}"

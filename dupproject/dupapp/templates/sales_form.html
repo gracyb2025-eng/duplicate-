@@ -103,11 +103,11 @@
       <div class="row">
         <div class="col-md-6 mb-3">
           <label class="form-label">Quantity</label>
-          <input type="number" name="quantity" class="form-control" placeholder="Enter quantity">
+          <input type="number" name="quantity" class="form-control" placeholder="Enter quantity" required>
         </div>
         <div class="col-md-6 mb-3">
           <label class="form-label">Unit Price</label>
-          <input type="number" name="unit_price" class="form-control" placeholder="Enter unit price">
+          <input type="number" name="unit_price" class="form-control" placeholder="Enter unit price" required>
         </div>
       </div>
 
@@ -115,7 +115,7 @@
       <div class="row">
         <div class="col-md-6 mb-3">
           <label class="form-label">Total Price</label>
-          <input type="number" name="total_price" class="form-control" placeholder="Enter total price">
+          <input type="number" name="total_price" class="form-control" placeholder="Enter total price" readonly>
         </div>
         <div class="col-md-6 mb-3">
           <label class="form-label">Distance (km)</label>
@@ -163,7 +163,23 @@
         </div>
       </div>
     </form>
+
   </div>
 </div>
+<script>
+    const quantityInput = document.getElementById("quantity");
+    const unitPriceInput = document.getElementById("unit_price");
+    const totalPriceInput = document.getElementById("total_price");
+
+    function calculateTotal() {
+        let quantity = parseFloat(quantityInput.value) || 0;
+        let unitPrice = parseFloat(unitPriceInput.value) || 0;
+
+        totalPriceInput.value = quantity * unitPrice;
+    }
+
+    quantityInput.addEventListener("input", calculateTotal);
+    unitPriceInput.addEventListener("input", calculateTotal);
+</script>
 
 {% endblock %}

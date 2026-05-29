@@ -53,6 +53,8 @@
 </style>
 
 <div class="history-container">
+  <div class="mb-3"><a href="{% url 'deposit_list' %}" class="btn btn-dark"><i class="fas fa-arrow-left"></i> Back to Deposits</a>
+</div>
   <h2>Deposit History for {{ customer_name }} ({{ item_name }})</h2>
 
   <!-- Deposit table -->
@@ -83,6 +85,7 @@
     <p><strong>Total Paid:</strong> UGX {{ total_paid|floatformat:0 }}</p>
     <p><strong>Remaining Balance:</strong> UGX {{ balance|floatformat:0 }}</p>
   </div>
+  
 </div>
 
 {% endblock %}

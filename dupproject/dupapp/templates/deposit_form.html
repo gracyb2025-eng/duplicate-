@@ -50,6 +50,8 @@
   <!-- Form body -->
   <div class="deposit-body">
     <form method="POST">
+      <div class="mb-3"><a href="{% url 'deposit_list' %}" class="btn btn-dark"><i class="fas fa-arrow-left"></i> Back to Deposits</a>
+</div>
       {% csrf_token %}
       <div class="mb-3">
         <label class="form-label">Customer Name</label>

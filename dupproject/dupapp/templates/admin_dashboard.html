@@ -47,6 +47,12 @@
     min-width: 250px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-left-color: crimson;
+    border-left-width: 6px;
+  }
+
+  .fas{
+    color: burlywood;
   }
   .card i {
     font-size: 2rem;
@@ -73,34 +79,34 @@
 <!-- Heading -->
 <h2 class="page-heading">Admin Dashboard</h2>
 
-<!-- Cards container -->
+<!-v- Cards container -->
 <div class="cards-container">
-  <div class="card bg-success text-white">
+  <div class="card text-dark">
     <i class="fas fa-boxes"></i>
     <h5>Total Stock Value</h5>
     <p>UGX {{ total_stock_value }}</p>
   </div>
-  <div class="card bg-danger text-white">
-    <i class="fas fa-exclamation-triangle"></i>
+  <div class="card text-dark">
+    <i class="fas fa-exclamation-triangle "></i>
     <h5>Low Stock Items</h5>
     <p>{{ low_stock.count }}</p>
   </div>
-  <div class="card bg-danger text-white">
+  <div class="card  text-dark">
     <i class="fas fa-handshake"></i>
     <h5>Suppliers on Credit</h5>
     <p>{{ supplier_credit.count }}</p>
   </div>
-  <div class="card bg-success text-white">
+  <div class="card text-dark">
     <i class="fas fa-users"></i>
     <h5>Total Suppliers</h5>
     <p>{{ suppliers.count }}</p>
   </div>
-  <div class="card bg-success text-white">
+  <div class="card text-dark">
     <i class="fas fa-truck"></i>
     <h5>Transport Revenue</h5>
     <p>UGX {{ transport_revenue }}</p>
   </div>
-  <div class="card bg-danger text-white">
+  <div class="card text-dark">
     <i class="fas fa-shipping-fast"></i>
     <h5>Free Deliveries</h5>
     <p>{{ free_deliveries }}</p>
@@ -113,7 +119,11 @@
   <table class="table table-bordered">
     <thead>
       <tr>
-        <th>Item</th><th>Spec</th><th>Qty</th><th>Supplier</th><th>Balance</th>
+        <th>Item Name</th>
+        <th>Specification(for item)</th>
+        <th>Quantity(for item)</th>
+        <th>Supplier(for item)</th>
+        <th>Balance</th>
       </tr>
     </thead>
     <tbody>
