@@ -92,9 +92,73 @@ def save_sale(request):
     return render(request, 'sales_form.html')
 
 
+def admin_save_sale(request):
+    if request.method == 'POST':
+        try:
+            distance_km = int(request.POST.get('distance_km', 0))
+            quantity_sold = int(request.POST['quantity'])
+            unit_price = Decimal(request.POST['unit_price'])
+            # auto calculate totalprice
+            total_price = quantity_sold * unit_price
+            item_name = request.POST['item_name']
+            specification = request.POST['specification']
+            # find stock item
+            stock = Stock.objects.filter(
+                item_name=item_name,
+                specification=specification
+            ).first()
+
+            # check if item exists
+            if not stock:
+                return render(request,'sales_form.html',{'errors': ['Item does not exist in stock.']})
+
+            # check available quantity
+            if stock.quantity < quantity_sold:
+                return render(request,'sales_form.html',{'errors': [f'Only {stock.quantity} items left in stock.']})
+
+            # transport logic
+            if total_price >= 500000 and distance_km <= 10:
+                transport_cost = 0
+            else:
+                transport_cost = 30000
+
+            sale = Sale(
+                item_name=item_name,
+                specification=specification,
+                quantity=quantity_sold,
+                unit_price=unit_price,
+                total_price=total_price,
+                payment_method=request.POST['payment_method'],
+                customer_name=request.POST['customer_name'],
+                contact=request.POST['contact'],
+                nin=request.POST['nin'],
+                receipt_number=generate_receipt_number(),
+                distance_km=distance_km,
+                transport_cost=transport_cost,
+            )
+
+            # validate
+            sale.full_clean()
+            # save sale
+            sale.save()
+            # reduce stock
+            stock.quantity -= quantity_sold
+            stock.save()
+            return redirect('admin_sales_dashboard')
+        except ValidationError as e:
+            return render(request,'admin_sales_form.html',{'errors': e.messages})
+    return render(request, 'admin_sales_form.html')
+
+
 def view_receipt(request, sale_id):
     sale = get_object_or_404(Sale, id=sale_id)
     return render(request, 'receipt.html', {'sale': sale})
+
+
+def admin_view_receipt(request, sale_id):
+    sale = get_object_or_404(Sale, id=sale_id)
+    return render(request,"admin_receipt.html",{"sale": sale})
+
 
 def add_payment(request, sale_id):
     sale = get_object_or_404(Sale, id=sale_id)
@@ -109,6 +173,21 @@ def add_payment(request, sale_id):
         form = PaymentForm()
     return render(request,"credit_payment.html",{"sale": sale,"form": form})
 
+
+def admin_add_payment(request, sale_id):
+    sale = get_object_or_404(Sale, id=sale_id)
+    if request.method == "POST":
+        form = PaymentForm(request.POST)
+        if form.is_valid():
+            payment = form.save(commit=False)
+            payment.sale = sale
+            payment.save()
+            return redirect("admin_sales_dashboard")
+    else:
+        form = PaymentForm()
+    return render(request,"admin_credit_payment.html",{"sale": sale,"form": form})
+
+
 def edit_sale(request, sale_id):
     sale = get_object_or_404(Sale, id=sale_id)
     if request.method == "POST":
@@ -119,6 +198,18 @@ def edit_sale(request, sale_id):
     else:
         form = SaleForm(instance=sale)  # pre-fill with current values
     return render(request, "edit_sale.html", {"form": form, "sale": sale})
+
+
+def admin_edit_sale(request, sale_id):
+    sale = get_object_or_404(Sale, id=sale_id)
+    if request.method == "POST":
+        form = SaleForm(request.POST, instance=sale)
+        if form.is_valid():
+            form.save()
+            return redirect("admin_sales_dashboard")
+    else:
+        form = SaleForm(instance=sale)  # pre-fill with current values
+    return render(request, "admin_edit_sale.html", {"form": form, "sale": sale})
 
 
 
@@ -252,6 +343,11 @@ def deposit_list(request):
     deposits = Deposit.objects.all().order_by("-date")
     return render(request, "deposit_list.html", {"deposits": deposits})
 
+def admin_deposit_list(request):
+    deposits = Deposit.objects.all().order_by("-date")
+    return render(request,"admin_deposit_list.html",{"deposits": deposits})
+
+
 # Add a new deposit
 def add_deposit(request):
     if request.method == "POST":
@@ -266,10 +362,30 @@ def add_deposit(request):
         form = DepositForm()
     return render(request,"deposit_form.html",{"form": form})
 
+
+def admin_add_deposit(request):
+    if request.method == "POST":
+        form = DepositForm(request.POST)
+        if form.is_valid():
+            deposit = form.save(commit=False)
+            deposit.receipt_number = (f"DPT{Deposit.objects.count() + 1:04d}")
+            deposit.save()
+            return redirect("admin_deposit_list")
+    else:
+        form = DepositForm()
+    return render(request,"admin_deposit_form.html",{"form": form})
+
+
 # View a temporary receipt for a deposit
 def view_deposit_receipt(request, deposit_id):
     deposit = get_object_or_404(Deposit, id=deposit_id)
     return render(request, "deposit_receipt.html", {"deposit": deposit})
+
+
+def admin_view_deposit_receipt(request, deposit_id):
+    deposit = get_object_or_404(Deposit,id=deposit_id)
+    return render(request,"admin_deposit_receipt.html",{"deposit": deposit})
+
 
 # Track deposit history for a customer + item
 def deposit_history(request, customer_name, item_name):
@@ -287,7 +403,19 @@ def deposit_history(request, customer_name, item_name):
     })
 
 
-
+def admin_deposit_history(request, customer_name, item_name):
+    deposits = Deposit.objects.filter(customer_name=customer_name, item_name=item_name).order_by("date")
+    total_paid = sum(d.amount for d in deposits)
+    total_cost = deposits.first().total_cost if deposits.exists() else 0
+    balance = total_cost - total_paid
+    return render(request, "admin_deposit_history.html", {
+        "customer_name": customer_name,
+        "item_name": item_name,
+        "deposits": deposits,
+        "total_paid": total_paid,
+        "total_cost": total_cost,
+        "balance": balance,
+    })
 
 
 def edit_stock(request, stock_id):
@@ -455,3 +583,5 @@ def admin_add_supplier_payment(request, stock_id):
         stock.save()
         return redirect("admin_stock_dashboard")
     return render(request,"admin_supplier_payment.html",{"stock": stock})
+
+

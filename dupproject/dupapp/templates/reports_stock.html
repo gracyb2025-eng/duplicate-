@@ -1,65 +1,160 @@
 {% extends "base_admin.html" %}
 {% block content %}
 <style>
-  h4{
+  /* body {
+    background: #f4f7fc; */
+
+  h2 {
     text-align: center;
-    font-weight: bold;
+    font-weight: 700;
+    margin-bottom: 30px;
+    /* color: #1e293b; */
   }
 
-  .card{
+  h4 {
+    text-align: center;
+    font-weight: 700;
+    margin: 30px 0 15px;
+    /* color: #334155; */
+  }
+
+  /* Summary Cards */
+
+  .report-card {
+    border: none;
+    border-radius: 18px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    text-align: center;
+    padding: 20px;
+    height: 140px;
     border-left-color: crimson;
-    border-left-width: 4px;
-    height: 100px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    text-align: center;
+    border-left-width: 6px;
   }
 
-  .card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  .report-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
   }
+
+  .report-card i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+
+  .report-card .number {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: black;
+  }
+
+  .report-card .label {
+    color: black;
+    font-weight: 600;
+  }
+
+  /* .icon-blue {
+    color: #2563eb;
+  } */
 
   .fas{
     color: burlywood;
-    font-size: larger;
   }
 
-  .container{
-    border-radius: 10px;
-    
+  /* .icon-green {
+    color: #16a34a;
+  } */
+
+  /* Table Containers */
+
+  .report-section {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
   }
 
-  th{
-    background-color: black;
+  /* Table Styling */
+
+  .table {
+    margin-bottom: 0;
+  }
+
+  .table thead th {
+    background: linear-gradient(
+      135deg,
+      #1e3a8a,
+      #2563eb
+    );
     color: white;
+    border: none;
+    text-align: center;
+    padding: 14px;
   }
 
+  .table tbody td {
+    vertical-align: middle;
+  }
+
+  .table tbody tr:hover {
+    background: #f8fafc;
+  }
+
+  .table-danger {
+    background-color: #fee2e2 !important;
+  }
+
+  /* Section Divider */
+
+  .section-title {
+    display: inline-block;
+    padding: 10px 25px;
+    border-radius: 30px;
+
+    color: black;
+    font-size: 1rem;
+    margin-bottom: 15px;
+  }
 </style>
 <h2>Stock Reports</h2>
 
-<div class="row mb-3">
-  <div class="col-md-3">
-    <div class="card text-dark">
+<div class="row mb-4">
+
+  <div class="col-md-4">
+    <div class="report-card">
       <i class="fas fa-boxes"></i>
-      <div class="card-body" style="font-weight: bold;">Total Items: {{ current_stock.count }}</div>
+      <div class="number">{{ current_stock.count }}</div>
+      <div class="label">Total Items</div>
     </div>
   </div>
-  <div class="col-md-3">
-    <div class="card text-dark">
+
+  <div class="col-md-4">
+    <div class="report-card">
       <i class="fas fa-exclamation-triangle "></i>
-      <div class="card-body" style="font-weight: bold;">Low Stock: {{ low_stock.count }}</div>
+      <div class="number">{{ low_stock.count }}</div>
+      <div class="label">Low Stock Items</div>
     </div>
   </div>
-  <div class="col-md-3">
-    <div class="card text-dark">
+
+  <div class="col-md-4">
+    <div class="report-card">
       <i class="fas fa-handshake"></i>
-      <div class="card-body" style="font-weight: bold;">Suppliers on Credit: {{ supplier_credit.count }}</div>
+      <div class="number">{{ supplier_credit.count }}</div>
+      <div class="label">Credit Suppliers</div>
     </div>
   </div>
+
 </div>
 
-<h4> Stock Inflow</h4>
-<div class="container">
+<h4>
+  <span class="section-title">
+    Stock Inflow
+  </span>
+</h4>
+<div class="report-section">
 <table class="table table-bordered">
   <tr>
     <th>Date</th>
@@ -71,8 +166,12 @@
 </table>
 </div>
 
-<h4> Current Stock Levels</h4>
-<div class="container">
+<h4>
+  <span class="section-title">
+    Current Stock Levels
+  </span>
+</h4>
+<div class="report-section">
 <table class="table table-striped">
   <tr> 
     <th>Item Name</th>
@@ -91,8 +190,12 @@
 </table>
 </div>
 
-<h4> Supplier Credit Balances</h4>
-<div class="container">
+<h4>
+  <span class="section-title">
+    Supplier Credit Balances
+  </span>
+</h4>
+<div class="report-section">
 <table class="table table-bordered">
   <tr><th>Supplier</th><th>Item</th><th>Total Cost</th><th>Amount Paid</th><th>Balance</th></tr>
   {% for stock in supplier_credit %}

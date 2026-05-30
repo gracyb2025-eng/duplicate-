@@ -1,0 +1,185 @@
+{% extends "base_admin.html" %}
+{% block content %}
+
+<style>
+  /* Main container */
+  .form-container {
+    background: #fff;
+    border-radius: 15px;
+    margin: 40px auto;
+    max-width: 900px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    overflow: hidden;
+  }
+
+  /* Black header strip */
+  .form-header {
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    padding: 15px;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  /* Form body */
+  .form-body {
+    padding: 25px;
+  }
+
+  /* Button hover effects */
+  .btn-success, .btn-danger {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .btn-success:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 128, 0, 0.3);
+  }
+  .btn-danger:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+  }
+</style>
+
+<div class="form-container">
+  <!-- Black heading line -->
+  <div class="form-header">
+    Add New Sale
+  </div>
+
+{% if errors %}
+    <div style="color:red;">
+        {% for error in errors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
+  <!-- Form body -->
+  <div class="form-body">
+    <form method="POST" action="{% if sale %}{% url 'edit_sale' sale.id %}{% else %}{% url 'save_sale' %}{% endif %}">
+      {% csrf_token %}
+
+      <!-- Item & Specification -->
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Item Name</label>
+          <select name="item_name" class="form-select">
+            <option value="Cement">Cement</option>
+            <option value="Iron Bars">Iron Bars</option>
+            <option value="Nails">Nails</option>
+            <option value="Roofing Nails">Roofing Nails</option>
+            <option value="Wheelbarrow">Wheelbarrow</option>
+            <option value="Wire Mesh">Wire Mesh</option>
+            <option value="Barbed Wire">Barbed Wire</option>
+            <option value="Iron Sheets">Iron Sheets</option>
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Specification</label>
+          <select name="specification" class="form-select">
+            <option value="CEM II/N">CEM II/N</option>
+            <option value="CEM III/N">CEM III/N</option>
+            <option value="10mm">10mm</option>
+            <option value="12mm">12mm</option>
+            <option value="16mm">16mm</option>
+            <option value="1 inch">1 inch</option>
+            <option value="3 inch">3 inch</option>
+            <option value="4 inch">4 inch</option>
+            <option value="5 inch">5 inch</option>
+            <option value="Roofing Nails 5kg">Roofing Nails 5kg</option>
+            <option value="Wheelbarrow">Wheelbarrow</option>
+            <option value="Wire Mesh">Wire Mesh</option>
+            <option value="High Tensile">High Tensile</option>
+            <option value="Low Tensile">Low Tensile</option>
+            <option value="Gauge 28">Gauge 28</option>
+            <option value="Gauge 30">Gauge 30</option>
+            <option value="Gauge 32">Gauge 32</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Quantity & Unit Price -->
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Quantity</label>
+          <input type="number" name="quantity" class="form-control" placeholder="Enter quantity" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Unit Price</label>
+          <input type="number" name="unit_price" class="form-control" placeholder="Enter unit price" required>
+        </div>
+      </div>
+
+      <!-- Total Price & Distance -->
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Total Price</label>
+          <input type="number" name="total_price" class="form-control" placeholder="Enter total price" readonly>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Distance (km)</label>
+          <input type="number" name="distance_km" class="form-control" placeholder="Enter distance in km">
+        </div>
+      </div>
+
+      <!-- Payment Method & Customer Name -->
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Payment Method</label>
+          <select name="payment_method" class="form-select">
+            <option value="Cash">Cash</option>
+            <option value="Credit">Credit</option>
+            <option value="Mobile">Mobile Money</option>
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Customer Name</label>
+          <input type="text" name="customer_name" class="form-control" placeholder="Enter customer name">
+        </div>
+      </div>
+
+      <!-- Contact & NIN -->
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Contact</label>
+          <input type="number" name="contact" class="form-control" placeholder="Enter customer phone">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">NIN</label>
+          <input type="text" name="nin" class="form-control" placeholder="Enter National ID Number">
+        </div>
+      </div>
+
+      <!-- Buttons centered below -->
+      <div class="row mt-4">
+        <div class="col-12 text-center">
+          <button type="submit" class="btn btn-success me-2">
+            <i class="fas fa-save"></i> Save Sale
+          </button>
+          <a href="{% url 'admin_sales_dashboard' %}" class="btn btn-danger">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+          </a>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</div>
+<script>
+    const quantityInput = document.getElementById("quantity");
+    const unitPriceInput = document.getElementById("unit_price");
+    const totalPriceInput = document.getElementById("total_price");
+
+    function calculateTotal() {
+        let quantity = parseFloat(quantityInput.value) || 0;
+        let unitPrice = parseFloat(unitPriceInput.value) || 0;
+
+        totalPriceInput.value = quantity * unitPrice;
+    }
+
+    quantityInput.addEventListener("input", calculateTotal);
+    unitPriceInput.addEventListener("input", calculateTotal);
+</script>
+
+{% endblock %}

@@ -12,7 +12,7 @@
     padding: 15px; /* reduced from 30px */
     margin: 10px auto; /* reduced */
     box-shadow: 0 4px 15px rgba(0,0,0,0.12);
-    max-width: 1100px;
+    max-width: 1400px;
   }
 
   /* Card styling */
@@ -144,12 +144,12 @@
                     Track deposits made by customers
                 </p>
 
-                <a href="{% url 'deposit_list' %}"
+                <a href="{% url 'admin_deposit_list' %}"
                    class="btn btn-light btn-sm">
                     View Deposits
                 </a>
 
-                <a href="{% url 'add_deposit' %}"
+                <a href="{% url 'admin_add_deposit' %}"
                    class="btn btn-dark btn-sm">
                     Add Deposit
                 </a>
@@ -170,7 +170,7 @@
 
 <!-- Add Sale button -->
 <div class="text-center mt-3">
-  <a href="{% url 'save_sale' %}" class="btn btn-success">
+  <a href="{% url 'admin_save_sale' %}" class="btn btn-success">
     <i class="fas fa-plus"></i> Add Sale
   </a>
 </div>
@@ -183,10 +183,10 @@
     <thead>
       <tr>
         <th>Receipt No</th>
-        <th>Item</th>
-        <th>Total Price</th>
-        <th>Amount Paid</th>
-        <th>Balance</th>
+        <th>Item Name</th>
+        <th>Total Price(UGX)</th>
+        <th>Amount Paid(UGX)</th>
+        <th>Balance(UGX)</th>
         <th>Status</th>
         <th>Actions</th>
       </tr>
@@ -206,7 +206,7 @@
 
         <td>
 
-          <a href="{% url 'view_receipt' sale.id %}"
+          <a href="{% url 'admin_view_receipt' sale.id %}"
              class="btn btn-sm btn-primary"
              title="View Receipt">
 
@@ -214,7 +214,7 @@
 
           </a>
 
-          <a href="{% url 'edit_sale' sale.id %}"
+          <a href="{% url 'admin_edit_sale' sale.id %}"
              class="btn btn-sm btn-info"
              title="Edit Sale">
 
@@ -224,7 +224,7 @@
 
           {% if sale.payment_method == "Credit" and sale.balance > 0 %}
 
-          <a href="{% url 'add_payment' sale.id %}"
+          <a href="{% url 'admin_add_payment' sale.id %}"
              class="btn btn-sm btn-warning"
              title="Add Payment">
 

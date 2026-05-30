@@ -1,4 +1,4 @@
-{% extends "base_sales.html" %}
+{% extends "base_admin.html" %}
 {% block content %}
 
 <style>
@@ -85,7 +85,7 @@
 </style>
 <div class="receipt-actions no-print">
 
-    <a href="{% url 'deposit_list' %}" class="action-btn back-btn">
+    <a href="{% url 'admin_deposit_list' %}" class="action-btn back-btn">
         <i class="fas fa-arrow-left"></i>
         Back
     </a>

@@ -20,7 +20,7 @@
     border-radius: 12px;
     padding: 25px;
     margin: 30px auto;
-    max-width: 1100px;
+    max-width: 1400px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.15);
   }
 
@@ -40,6 +40,9 @@
     padding: 20px;
     flex: 1;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-left-color: crimson;
+    border-left-width: 6px;
+    height: 150px;
   }
   .card i {
     font-size: 1.8rem;
@@ -57,6 +60,10 @@
     text-align: center;
     vertical-align: middle;
   }
+
+  .icon{
+    color: burlywood;
+  }
 </style>
 
 <!-- Heading above cards -->
@@ -64,12 +71,16 @@
 
 <!-- Cards container -->
 <div class="cards-container">
-  <div class="card bg-success text-white">
+  <div class="card text-dark">
+    <div class="icon">
     <i class="fas fa-boxes"></i>
-    <div>Total Stock Value: {{ total_value }}</div>
+    </div>
+    <div>Total Stock Value: (UGX){{ total_value }}</div>
   </div>
-  <div class="card bg-danger text-white">
+  <div class="card text-dark">
+    <div class="icon">
     <i class="fas fa-exclamation-triangle"></i>
+    </div>
     <div>Low Stock Items: {{ low_stock.count }}</div>
   </div>
 </div>
@@ -79,13 +90,13 @@
   <table class="table table-bordered">
     <thead>
       <tr>
-        <th>Item</th>
-        <th>Spec</th>
-        <th>Qty</th>
-        <th>Unit Cost</th>
-        <th>Selling Price</th>
-        <th>Supplier</th>
-        <th>Balance</th>
+        <th>Item Name</th>
+        <th>Specification(For Item)</th>
+        <th>Quantity(supplied)</th>
+        <th>Unit Cost(By supplier)</th>
+        <th>Selling Price(By hardware)</th>
+        <th>Supplier Name</th>
+        <th>Balance(To supplier)</th>
         <th>Date Received</th>
         <th>Actions</th>
       </tr>
