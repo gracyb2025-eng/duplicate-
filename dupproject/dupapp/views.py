@@ -14,6 +14,7 @@ def generate_receipt_number():
     last_number = Sale.objects.filter(date__date=datetime.date.today()).count() + 1
     return f"RCT-{today}-{last_number:03d}"
 
+@login_required
 def sales_dashboard(request):
     sales = Sale.objects.all().order_by("-date")
     total_sales = Sale.objects.aggregate(Sum('total_price'))['total_price__sum'] or 0
@@ -243,6 +244,7 @@ def reports(request):
     payment_methods = Sale.objects.values('payment_method').annotate(total=Sum('total_price'))
     return render(request, "reports.html", {"daily_sales": daily_sales,"payment_methods": payment_methods,})
 
+@login_required
 def stock_dashboard(request):
     stocks = Stock.objects.all()
     total_value = sum([s.stock_value() for s in stocks]) if stocks else 0

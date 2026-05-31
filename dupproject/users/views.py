@@ -21,6 +21,13 @@ def register_user(request):
 
 def login_user(request):
     if request.method == 'POST':
+        errors = []
+        if not request.POST.get("username"):
+            errors.append("Username is required.")
+        if not request.POST.get("password"):
+            errors.append("Password is required.")
+        if errors:
+            return render(request, "registration/login.html", {"errors": errors})
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request,username=username,password=password)
