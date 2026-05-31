@@ -36,8 +36,22 @@ from decimal import Decimal
 
 def save_sale(request):
     if request.method == 'POST':
+
+        errors = []
+        if not request.POST.get('quantity'):
+            errors.append('Quantity is required.')
+        if not request.POST.get('customer_name'):
+            errors.append('Customer name is required.')
+        if not request.POST.get('unit_price'):
+            errors.append('Unit price is required.')
+        if not request.POST.get('contact'):
+            errors.append('Contact is required.')
+        if errors:
+            return render(request,'sales_form.html',{'errors': errors})
+
+        
         try:
-            distance_km = int(request.POST.get('distance_km', 0))
+            distance_km = int(request.POST.get('distance_km') or 0)
             quantity_sold = int(request.POST['quantity'])
             unit_price = Decimal(request.POST['unit_price'])
             # auto calculate totalprice
@@ -94,8 +108,19 @@ def save_sale(request):
 
 def admin_save_sale(request):
     if request.method == 'POST':
+        errors = []
+        if not request.POST.get('quantity'):
+            errors.append('Quantity is required.')
+        if not request.POST.get('customer_name'):
+            errors.append('Customer name is required.')
+        if not request.POST.get('unit_price'):
+            errors.append('Unit price is required.')
+        if not request.POST.get('contact'):
+            errors.append('Contact is required.')
+        if errors:
+            return render(request,'sales_form.html',{'errors': errors})
         try:
-            distance_km = int(request.POST.get('distance_km', 0))
+            distance_km = int(request.POST.get('distance_km') or 0)
             quantity_sold = int(request.POST['quantity'])
             unit_price = Decimal(request.POST['unit_price'])
             # auto calculate totalprice
@@ -239,7 +264,7 @@ def add_stock(request):
             return redirect("stock_dashboard")
     else:
         form = StockForm()
-        return render(request, "stock_form.html", {"form": form,"suppliers": Supplier.objects.all()})
+    return render(request, "stock_form.html", {"form": form,"suppliers": Supplier.objects.all()})
 
 
 def view_stock(request, stock_id):

@@ -57,7 +57,7 @@
 
   <!-- Form body -->
   <div class="form-body">
-    <form method="POST" action="{% if sale %}{% url 'edit_sale' sale.id %}{% else %}{% url 'save_sale' %}{% endif %}">
+    <form method="POST" novalidate action="{% if sale %}{% url 'edit_sale' sale.id %}{% else %}{% url 'save_sale' %}{% endif %}">
       {% csrf_token %}
 
       <!-- Item & Specification -->
@@ -103,11 +103,11 @@
       <div class="row">
         <div class="col-md-6 mb-3">
           <label class="form-label">Quantity</label>
-          <input type="number" name="quantity" class="form-control" placeholder="Enter quantity" required>
+          <input type="number" id="quantity" name="quantity" class="form-control" placeholder="Enter quantity">
         </div>
         <div class="col-md-6 mb-3">
           <label class="form-label">Unit Price</label>
-          <input type="number" name="unit_price" class="form-control" placeholder="Enter unit price" required>
+          <input type="number" id="unit_price" name="unit_price" class="form-control" placeholder="Enter unit price">
         </div>
       </div>
 
@@ -115,7 +115,7 @@
       <div class="row">
         <div class="col-md-6 mb-3">
           <label class="form-label">Total Price</label>
-          <input type="number" name="total_price" class="form-control" placeholder="Enter total price" readonly>
+          <input type="number" id="total_price" name="total_price" class="form-control" placeholder="Enter total price" readonly>
         </div>
         <div class="col-md-6 mb-3">
           <label class="form-label">Distance (km)</label>
