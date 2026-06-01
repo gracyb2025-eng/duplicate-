@@ -106,14 +106,17 @@
         </div>
     {% endif %}
 
-      {% if messages %}
-      {% for message in messages %}
-          <div style="background:red;color:white;padding:10px;margin-bottom:15px;border-radius:6px;text-align:center;">
-              {{ message }}
-          </div>
-      {% endfor %}
-  {% endif %}
+    {% if messages %}
+{% for message in messages %}
+    {% if message.tags == "error" %}
+        <div style="background:red;color:white;padding:10px;margin-bottom:15px;border-radius:6px;text-align:center;">
+            {{ message }}
+        </div>
+    {% endif %}
+{% endfor %}
+{% endif %}
 
+      
   <form method="post" novalidate autocomplete="off">
         {% csrf_token %}
         <label for="username">Username</label>

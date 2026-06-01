@@ -129,6 +129,9 @@ def admin_save_sale(request):
             item_name = request.POST['item_name']
             specification = request.POST['specification']
             # find stock item
+
+            print("ITEM:", item_name)
+            print("SPEC:", specification)
             stock = Stock.objects.filter(
                 item_name=item_name,
                 specification=specification
@@ -260,13 +263,20 @@ def stock_dashboard(request):
 def add_stock(request):
     if request.method == "POST":
         form = StockForm(request.POST)
+
+        print(request.POST)
+
         if form.is_valid():
             form.save()
-            messages.success(request, "Stock added successfully.")
+            print("SAVED SUCCESSFULLY")
             return redirect("stock_dashboard")
+
+        print("FORM ERRORS:", form.errors)
+
     else:
         form = StockForm()
-    return render(request, "stock_form.html", {"form": form,"suppliers": Supplier.objects.all()})
+
+    return render(request, "stock_form.html", {"form": form})
 
 
 def view_stock(request, stock_id):
