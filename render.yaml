@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: duplicate-
+    runtime: python
+    rootDir: dupproject
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn dupproject.wsgi
