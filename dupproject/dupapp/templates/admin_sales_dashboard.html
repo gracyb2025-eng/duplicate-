@@ -21,7 +21,7 @@
     box-shadow: 0 3px 10px rgba(0,0,0,0.12);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     margin-bottom: 12px;
-    border-left-color: crimson;
+    border-left-color: burlywood;
     border-left-width: 6px;
   }
 
@@ -206,17 +206,13 @@
 
         <td>
 
-          <a href="{% url 'admin_view_receipt' sale.id %}"
-             class="btn btn-sm btn-primary"
-             title="View Receipt">
+          <a href="{% url 'admin_view_receipt' sale.id %}" title="View Receipt" style="color: burlywood;">
 
             <i class="fa-solid fa-receipt"></i>
 
           </a>
 
-          <a href="{% url 'admin_edit_sale' sale.id %}"
-             class="btn btn-sm btn-info"
-             title="Edit Sale">
+          <a href="{% url 'admin_edit_sale' sale.id %}" title="Edit Sale" style="color: burlywood;">
 
             <i class="fa-solid fa-pen-to-square"></i>
 
@@ -224,9 +220,7 @@
 
           {% if sale.payment_method == "Credit" and sale.balance > 0 %}
 
-          <a href="{% url 'admin_add_payment' sale.id %}"
-             class="btn btn-sm btn-warning"
-             title="Add Payment">
+          <a href="{% url 'admin_add_payment' sale.id %}" title="Add Payment" style="color: burlywood;">
 
             <i class="fa-solid fa-pencil"></i>
 

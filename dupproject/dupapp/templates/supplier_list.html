@@ -90,13 +90,11 @@
                 <td>
     <div class="d-flex gap-2 justify-content-center">
 
-        <a href="{% url 'edit_supplier' supplier.id %}"
-           class="btn btn-primary btn-sm">
-            <i class="fas fa-edit"></i> Edit
+        <a href="{% url 'edit_supplier' supplier.id %}" style="color: burlywood;">
+            <i class="fas fa-edit"></i> 
         </a>
 
-        <a href="{% url 'delete_supplier' supplier.id %}"
-           class="btn btn-danger btn-sm">
+        <a href="{% url 'delete_supplier' supplier.id %}" style="color: burlywood;">
             <i class="fas fa-trash"></i>
         </a>
 

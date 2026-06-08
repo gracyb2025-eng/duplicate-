@@ -132,6 +132,7 @@ class Stock(models.Model):
         ]
     )
     amount_paid = models.DecimalField(max_digits=10,decimal_places=2,default=0)
+
    
    #validations
     def clean(self):
